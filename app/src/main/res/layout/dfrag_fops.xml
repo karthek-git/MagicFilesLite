@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:background="@color/colorLiiDark" android:layout_width="match_parent" android:layout_height="match_parent">
+    <TextView android:textColor="#ffffff" android:id="@+id/textView4" android:padding="15dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@android:string/copy" android:onClick="m_fops_ynk" android:textAlignment="center"/>
+    <TextView android:textColor="#ffffff" android:id="@+id/textView5" android:padding="15dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@android:string/cut" android:onClick="m_fops_kill" android:textAlignment="center"/>
+    <TextView android:textColor="#ffffff" android:id="@+id/textView6" android:padding="15dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/delete" android:onClick="m_fops_del" android:textAlignment="center"/>
+    <TextView android:textColor="#ffffff" android:id="@+id/textView7" android:padding="15dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/rename" android:onClick="m_fops_editname" android:textAlignment="center"/>
+    <TextView android:textColor="#ffffff" android:id="@+id/textView8" android:padding="15dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/share" android:onClick="m_fops_share" android:textAlignment="center"/>
+    <TextView android:textColor="#ffffff" android:id="@+id/textView9" android:padding="15dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/stat" android:onClick="m_fops_stat" android:textAlignment="center"/>
+</LinearLayout>

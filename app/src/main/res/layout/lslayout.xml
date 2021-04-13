@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:descendantFocusability="blocksDescendants">
+
+	<LinearLayout
+		android:layout_width="36dp"
+		android:layout_height="36dp"
+		android:layout_margin="18dp"
+		android:gravity="center">
+
+		<ImageView
+			android:id="@+id/img"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:contentDescription="@string/file_icon_preview"
+			android:src="@drawable/ic_file_prev" />
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/file_name"
+		android:layout_width="0dp"
+		android:layout_height="36dp"
+		android:layout_margin="18dp"
+		android:layout_weight="1"
+		android:gravity="center_vertical"
+		android:textColor="#ffffff" />
+
+
+	<TextView
+		android:id="@+id/textView3"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:layout_marginBottom="18dp"
+		android:textColor="#a4a0a0" />
+
+	<ImageButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:background="@android:color/black"
+		android:contentDescription="@string/file_options"
+		android:onClick="m_fops"
+		android:padding="30dp"
+		android:src="@drawable/ic_menu_prev" />
+
+
+</LinearLayout>

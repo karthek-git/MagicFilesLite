@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:icon="?android:attr/actionModeCopyDrawable" android:id="@+id/t_fops_ynk" android:title="@android:string/copy" android:titleCondensed="@android:string/paste" android:showAsAction="never|ifRoom|withText"/>
+    <item android:icon="?android:attr/actionModeCutDrawable" android:id="@+id/t_fops_cut" android:title="@android:string/cut" android:titleCondensed="@android:string/cut" android:showAsAction="never|ifRoom|withText"/>
+    <item android:icon="@android:drawable/ic_menu_delete" android:id="@+id/t_fops_del" android:title="@string/delete" android:titleCondensed="@string/delete" android:showAsAction="never|ifRoom|withText"/>
+</menu>

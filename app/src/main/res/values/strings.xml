@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="DescMkdir">Create New Directory</string>
+    <string name="FSize">Size</string>
+    <string name="MDate">Last Modified Date</string>
+    <string name="MType">MIME-Type</string>
+    <string name="NewDir">New</string>
+    <string name="app_name">Files</string>
+    <string name="delete">Delete</string>
+    <string name="dwn">Downloads</string>
+    <string name="eDir">No Files</string>
+    <string name="file_icon_preview">File Icon Preview</string>
+    <string name="file_info">File Info</string>
+    <string name="ins">Internal Storage</string>
+    <string name="key1">Type here…</string>
+    <string name="key2">Send</string>
+    <string name="play">You don\'t seem to have an app that can open this file. Try searching Google Play for one that can.</string>
+    <string name="prefs">Settings</string>
+    <string name="prefs_ctg_gen">General</string>
+    <string name="prefs_gen_a">Show hidden files</string>
+    <string name="rename">Rename</string>
+    <string name="search_is">Search InternalStorage</string>
+    <string name="share">Share</string>
+    <string name="stat">info</string>
+    <string name="unk">Unknown</string>
+    <string name="file_options">File Options</string>
+
+    <plurals name="items">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+</resources>
