@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<style name="head_info">
+		<item name="android:textSize">20sp</item>
+		<item name="android:layout_marginTop">18dp</item>
+		<item name="android:layout_marginStart">18dp</item>
+		<item name="android:layout_marginBottom">8dp</item>
+		<item name="android:textAppearance">@android:style/TextAppearance.Material.Headline</item>
+	</style>
+	<style name="head_info_child">
+		<item name="android:layout_marginStart">18dp</item>
+		<item name="android:layout_marginBottom">8dp</item>
+		<item name="android:textAppearance">@android:style/TextAppearance.Material.Small</item>
+	</style>
+
+</resources>

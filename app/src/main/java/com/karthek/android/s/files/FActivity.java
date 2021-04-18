@@ -15,6 +15,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -48,6 +49,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_f);
 		System.out.println("called oncreate\n");
@@ -129,7 +131,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.app_bar, menu);
-
+		getActionBar().setHideOnContentScrollEnabled(true);
 		SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
 		SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(ComponentName.createRelative(this, ".SearchActivity")));
@@ -189,6 +191,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 			Toast.makeText(this, "GRANT PERMISSION TO ACCESS FILES", Toast.LENGTH_SHORT).show();
 		}
 	}
+
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -336,8 +339,9 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 
 	public void m_fops_share(View view) {
 		Intent intent = new Intent(ACTION_SEND);
-		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.karthek.android.s.files.FProvider.file" + Uri.encode(listFragment.Cwd, selectedFile)));
-		intent.setType(FileType.getFileMIMEType(listFragment.Cwd + selectedFile));
+		String f = listFragment.Cwd + selectedFile;
+		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.karthek.android.s.files.FProvider.file/" + Uri.encode(f)));
+		intent.setType(FileType.getFileMIMEType(f));
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		startActivity(Intent.createChooser(intent, null));
 	}

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.karthek.android.s.files.lsView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:descendantFocusability="blocksDescendants">
+	android:background="@color/lsview_state"
+	android:descendantFocusability="blocksDescendants"
+	android:stateListAnimator="@animator/animate_lsview_selector"
+	>
 
 	<LinearLayout
 		android:layout_width="36dp"
 		android:layout_height="36dp"
+		android:layout_gravity="center"
 		android:layout_margin="18dp"
 		android:gravity="center">
 
@@ -18,33 +22,43 @@
 			android:src="@drawable/ic_file_prev" />
 	</LinearLayout>
 
-	<TextView
-		android:id="@+id/file_name"
+	<LinearLayout
 		android:layout_width="0dp"
-		android:layout_height="36dp"
-		android:layout_margin="18dp"
+		android:layout_height="match_parent"
+		android:layout_gravity="center_vertical"
 		android:layout_weight="1"
 		android:gravity="center_vertical"
-		android:textColor="#ffffff" />
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/file_name"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="18dp"
+			android:ellipsize="middle"
+			android:singleLine="true"
+			android:textColor="@color/colorMain"
+			android:textSize="15sp" />
 
 
-	<TextView
-		android:id="@+id/textView3"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom"
-		android:layout_marginBottom="18dp"
-		android:textColor="#a4a0a0" />
+		<TextView
+			android:id="@+id/tv_fsize"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom|end"
+			android:textColor="?android:textColorSecondary"
+			android:textSize="12sp" />
+	</LinearLayout>
 
 	<ImageButton
+		style="?android:borderlessButtonStyle"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:background="@android:color/black"
+		android:layout_height="match_parent"
+		android:layout_gravity="center_vertical"
 		android:contentDescription="@string/file_options"
 		android:onClick="m_fops"
 		android:padding="30dp"
-		android:src="@drawable/ic_menu_prev" />
+		android:src="@drawable/ic_action_more" />
 
 
-</LinearLayout>
+</com.karthek.android.s.files.lsView>

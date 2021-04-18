@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:icon="?android:attr/actionModePasteDrawable" android:id="@+id/ab_paste" android:visible="false" android:title="@android:string/paste" android:showAsAction="ifRoom"/>
-    <item android:icon="@drawable/ic_search_black_24dp" android:id="@+id/app_bar_search" android:title="@android:string/search_go" android:showAsAction="ifRoom" android:actionViewClass="android.widget.SearchView"/>
-    <item android:icon="@drawable/ic_list_customize" android:id="@+id/ab_customize" android:title="@string/prefs" android:showAsAction="ifRoom"/>
+	<item
+		android:id="@+id/ab_paste"
+		android:icon="?android:attr/actionModePasteDrawable"
+		android:showAsAction="ifRoom"
+		android:title="@android:string/paste"
+		android:visible="false" />
+	<item
+		android:id="@+id/app_bar_search"
+		android:actionViewClass="android.widget.SearchView"
+		android:icon="@drawable/ic_search_black_24dp"
+		android:showAsAction="ifRoom"
+		android:title="@android:string/search_go" />
+	<item
+		android:id="@+id/ab_customize"
+		android:icon="@drawable/ic_list_customize"
+		android:showAsAction="ifRoom"
+		android:title="@string/prefs" />
 </menu>

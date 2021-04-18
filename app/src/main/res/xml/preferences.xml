@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/prefs_ctg_gen">
-        <SwitchPreference android:title="@string/prefs_gen_a" android:key="prefs_gen_a" android:defaultValue="false"/>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="Sort order">
-        <SwitchPreference android:title="Ascending" android:key="switch_preference_1" android:defaultValue="true"/>
-        <ListPreference android:entries="@array/SortPref" android:title="Sort Type..." android:key="prefs_sort_type" android:defaultValue="true" android:entryValues="@array/SortPref"/>
-    </PreferenceCategory>
+	<PreferenceCategory android:title="@string/prefs_ctg_gen">
+		<SwitchPreference
+			android:defaultValue="false"
+			android:key="prefs_gen_a"
+			android:title="@string/prefs_gen_a" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Sort order">
+		<SwitchPreference
+			android:defaultValue="true"
+			android:key="switch_preference_1"
+			android:title="Ascending" />
+		<ListPreference
+			android:defaultValue="true"
+			android:entries="@array/SortPref"
+			android:entryValues="@array/SortPref"
+			android:key="prefs_sort_type"
+			android:title="Sort Type..." />
+	</PreferenceCategory>
 </PreferenceScreen>

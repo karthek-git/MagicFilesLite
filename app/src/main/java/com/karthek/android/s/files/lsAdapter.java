@@ -58,7 +58,7 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 			convertView.setTag(viewHolder);
 			viewHolder.imageView = convertView.findViewById(R.id.img);
 			viewHolder.FileName = convertView.findViewById(R.id.file_name);
-			viewHolder.FileSize = convertView.findViewById(R.id.textView3);
+			viewHolder.FileSize = convertView.findViewById(R.id.tv_fsize);
 
 			viewHolder.imageView.setOnClickListener(this);
 			//viewHolder.FileName.setOnLongClickListener(this);
@@ -119,6 +119,6 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 	@Override
 	public void notifyDataSetChanged() {
 		dens = pFragment.sFiles;
-		super.notifyDataSetChanged();
+		//super.notifyDataSetChanged();
 	}
 }

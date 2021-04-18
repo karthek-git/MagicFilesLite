@@ -28,7 +28,7 @@ import static android.content.Intent.ACTION_VIEW;
 public class lsFrag extends ListFragment implements LoaderManager.LoaderCallbacks<SFile[]> {
 
 	String Cwd = "/storage/emulated/0/";
-	int NestChop = 0;
+	int NestChop;
 	ProgressBar progressBar;
 	Stack<Parcelable> parcelableStack = new Stack<>();
 	Parcelable curState;
@@ -59,6 +59,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		return inflater.inflate(R.layout.frag_list, container, false);
 	}
 
+
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
@@ -70,7 +71,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		parcelableStack.push(getListView().onSaveInstanceState());
+		parcelableStack.push(l.onSaveInstanceState());
 		lsAdapter.ViewHolder viewHolder = (lsAdapter.ViewHolder) v.getTag();
 		m2(Cwd + viewHolder.FileName.getText());
 	}
@@ -90,6 +91,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 			setListAdapter(lsAdapter);
 		} else {
 			((lsAdapter) getListAdapter()).notifyDataSetChanged();
+			setListAdapter(getListAdapter());
 		}
 		if (curState != null) {
 			getListView().onRestoreInstanceState(curState);
@@ -171,9 +173,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	}
 
 	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-		if (getBitmapFromMemCache(key) == null) {
-			bitmapLruCache.put(key, bitmap);
-		}
+		bitmapLruCache.put(key, bitmap);
 	}
 
 	public Bitmap getBitmapFromMemCache(String key) {
