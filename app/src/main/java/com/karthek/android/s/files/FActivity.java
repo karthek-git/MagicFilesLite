@@ -149,6 +149,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 		//searchView.setSearchableInfo(searchManager.getSearchableInfo(ComponentName
 		// .createRelative(this, ".SearchActivity")));
 		searchView.setOnQueryTextListener(listFragment);
+		searchView.setOnCloseListener(listFragment);
 
 		return true;
 	}

@@ -40,7 +40,8 @@ import static android.content.Intent.ACTION_VIEW;
 import static java.nio.file.Files.walkFileTree;
 
 public class lsFrag extends ListFragment implements LoaderManager.LoaderCallbacks<SFile[]>,
-		SharedPreferences.OnSharedPreferenceChangeListener, SearchView.OnQueryTextListener {
+		SharedPreferences.OnSharedPreferenceChangeListener, SearchView.OnQueryTextListener,
+		SearchView.OnCloseListener {
 
 	public String Cwd = "/storage/emulated/0/";
 	int NestChop = -1;
@@ -120,11 +121,15 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		m2(viewHolder.sFile.file.getAbsolutePath());
 	}
 
+	boolean shouldStop = false;
+
 	@Override
 	public boolean onQueryTextSubmit(final String query) {
+		shouldStop = !shouldStop;
+		sFiles=null;
 		getListView().setVisibility(View.GONE);
 		progressBar.setVisibility(View.VISIBLE);
-		Thread SearchThread = new Thread(new Runnable() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -133,13 +138,18 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 					e.printStackTrace();
 				}
 			}
-		});
-		SearchThread.start();
+		}).start();
 		return false;
 	}
 
 	@Override
 	public boolean onQueryTextChange(final String newText) {
+		return false;
+	}
+
+	@Override
+	public boolean onClose() {
+		getLoaderManager().restartLoader(0,null,this);
 		return false;
 	}
 
@@ -266,6 +276,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	}
 
 	private void goSearchFiles(String query) throws IOException {
+		shouldStop=false;
 		final ArrayList<SFile> fileArrayList = new ArrayList<>();
 		final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**" + query + "**");
 		walkFileTree(Paths.get("/storage/emulated/0"), new SimpleFileVisitor<Path>() {
@@ -282,6 +293,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 
 			@Override
 			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				if (shouldStop) return FileVisitResult.TERMINATE;
 				addIt();
 				return super.postVisitDirectory(dir, exc);
 			}
@@ -301,7 +313,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 			}
 
 			private void addIt() {
-				int fsize=fileArrayList.size();
+				int fsize = fileArrayList.size();
 				if (fsize > size) {
 					size = fsize;
 					sFiles = fileArrayList.toArray(new SFile[0]);

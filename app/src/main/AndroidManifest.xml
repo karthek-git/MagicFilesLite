@@ -31,10 +31,8 @@
 		<activity
 			android:name="com.karthek.android.s.files.DisplayMessageActivity"
 			android:parentActivityName="com.karthek.android.s.files.FActivity" />
-		<activity
-			android:name="com.karthek.android.s.files.FActivity"
-			android:parentActivityName="com.karthek.android.s.files.MainActivity" />
-		<activity android:name="com.karthek.android.s.files.MainActivity">
+		<activity android:name="com.karthek.android.s.files.FActivity">
+
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -42,6 +40,9 @@
 			<meta-data
 				android:name="android.app.shortcuts"
 				android:resource="@xml/shortcuts" />
+		</activity>
+		<activity android:name="com.karthek.android.s.files.MainActivity">
+
 		</activity>
 		<activity
 			android:name="com.karthek.android.s.files.Fops_Overlay"
