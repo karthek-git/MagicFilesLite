@@ -39,8 +39,10 @@ public class FilePreview implements Runnable {
 
 	@Override
 	public void run() {
-		filename = sFile.file.getAbsolutePath();
-		setFilePreviewIcon();
+		if(sFile.file.exists()) {
+			filename = sFile.file.getAbsolutePath();
+			setFilePreviewIcon();
+		}
 	}
 
 	public void setFilePreviewIcon() {

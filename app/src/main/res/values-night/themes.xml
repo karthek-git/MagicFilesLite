@@ -14,11 +14,21 @@
 		  &lt;!&ndash; Customize your theme here. &ndash;&gt;
 	  </style>-->
 	<style name="BlackSanUI" parent="android:Theme.DeviceDefault.DayNight">
+		<item name="android:windowActionBarOverlay">true</item>
 		<item name="android:windowBackground">@android:color/black</item>
-		<item name="android:alertDialogStyle">@style/BlackSanUI.Dialog</item>
+		<item name="android:windowActivityTransitions">true</item>
+		<item name="android:alertDialogTheme">@style/BlackSanUI.Dialog</item>
 	</style>
 
-	<style name="BlackSanUI.Dialog" parent="android:ThemeOverlay.Material.Dialog.Alert">
-		<item name="android:background">@color/colorPrimary</item>
+	<style name="BlackSanUI.Dialog" parent="android:Theme.DeviceDefault.Dialog.Alert">
+		<item name="android:background">@color/colorLiiDark</item>
+		<item name="android:dialogCornerRadius">14dp</item>
+		<item name="android:windowSoftInputMode">stateVisible</item>
+		<item name="android:windowAnimationStyle">@style/BlackSanUI_Dialog_show</item>
 	</style>
+
+	<style name="BlackSanUI_Dialog_show">
+		<item name="android:windowEnterAnimation">@anim/anim_dialog_show</item>
+	</style>
+
 </resources>

@@ -12,12 +12,14 @@
 	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
 	<application
+		android:name=".FApplication"
 		android:allowBackup="false"
 		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
 		android:requestLegacyExternalStorage="true"
 		android:roundIcon="@mipmap/ic_launcher_round"
-		android:supportsRtl="true">
+		android:supportsRtl="true"
+		android:theme="@style/BlackSanUI">
 		<activity android:name="com.karthek.android.s.files.SearchActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.SEARCH" />
@@ -31,9 +33,7 @@
 			android:parentActivityName="com.karthek.android.s.files.FActivity" />
 		<activity
 			android:name="com.karthek.android.s.files.FActivity"
-			android:parentActivityName="com.karthek.android.s.files.MainActivity"
-			android:theme="@style/BlackSanUI"
-			/>
+			android:parentActivityName="com.karthek.android.s.files.MainActivity" />
 		<activity android:name="com.karthek.android.s.files.MainActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

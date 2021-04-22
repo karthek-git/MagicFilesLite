@@ -39,10 +39,12 @@ public class dirDialog extends DialogFragment {
 				break;
 			case 2:
 				builder.setView(inflater.inflate(R.layout.frag_d_info, null));
+				builder.setPositiveButton(android.R.string.ok,null);
 				break;
 			case 3:
 			case 4:
 				builder.setView(inflater.inflate(R.layout.dirdialog, null));
+				builder.setTitle(R.string.DescMkdir);
 				builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						((FActivity) getActivity()).m_fops_mkdir();
@@ -69,7 +71,6 @@ public class dirDialog extends DialogFragment {
 			case 7:
 
 		}
-
 		return builder.create();
 	}
 
@@ -80,6 +81,8 @@ public class dirDialog extends DialogFragment {
 		}
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
+
+
 
 	@Override
 	public void onStart() {
@@ -98,7 +101,6 @@ public class dirDialog extends DialogFragment {
 				EditText editText = getDialog().findViewById(R.id.editDir);
 				editText.setText(renamefile, TextView.BufferType.NORMAL);
 				editText.selectAll();
-				//editText.requestFocus();
 				//InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 				// inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 				break;

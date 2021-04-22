@@ -6,9 +6,11 @@ public class FComparator implements Comparator<SFile> {
 
 
 	int SType;
+	boolean asc;
 
-	public FComparator(int SType) {
+	public FComparator(int SType, boolean asc) {
 		this.SType = SType;
+		this.asc = asc;
 	}
 
 	@Override
@@ -23,11 +25,11 @@ public class FComparator implements Comparator<SFile> {
 
 			switch (SType) {
 				case 0:
-					return o1.file.compareTo(o2.file);
+					return asc ? o1.file.compareTo(o2.file) : o2.file.compareTo(o1.file);
 				case 1:
-					return Long.compare(o1.size, o2.size);
+					return asc ? Long.compare(o1.size, o2.size) : Long.compare(o2.size, o1.size);
 				case 2:
-					return Long.compare(o1.modified, o2.modified);
+					return asc ? Long.compare(o1.modified, o2.modified) : Long.compare(o2.modified, o1.modified);
 			}
 
 		}

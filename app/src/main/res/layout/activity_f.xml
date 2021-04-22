@@ -10,8 +10,10 @@
 		android:orientation="vertical">
 
 		<LinearLayout
+			android:id="@+id/coLayout"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
+			android:layout_height="wrap_content"
+			>
 
 			<TextView
 				android:id="@+id/pathv"
@@ -30,6 +32,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent" />
 	</LinearLayout>
+
 
 	<ImageButton
 		android:id="@+id/rel_new_dir"
@@ -54,6 +57,9 @@
 		android:layout_marginTop="18dp"
 		android:layout_marginEnd="18dp"
 		android:layout_marginBottom="18dp"
+		android:background="@drawable/smooth_edge_rect"
+		android:padding="14dp"
+		android:theme="@style/BlackSanUI.Button"
 		android:visibility="gone">
 
 		<TextView

@@ -65,6 +65,7 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
+		viewHolder.sFile = dens[position];
 		viewHolder.pos = position;
 		viewHolder.FileName.setText(dens[position].file.getName());
 
@@ -79,7 +80,7 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 				viewHolder.imageView.setImageBitmap(bitmap);
 			} else {
 				viewHolder.imageView.setImageResource(dens[position].res);
-				new Thread(new FilePreview(viewHolder.context, pFragment, viewHolder, position, dens[position])).start();
+				FApplication.executorService.execute(new FilePreview(viewHolder.context, pFragment, viewHolder, position, dens[position]));
 			}
 		}
 		//convertView.setFocusable(true);
@@ -88,6 +89,7 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 
 	public static class ViewHolder {
 		Context context;
+		SFile sFile;
 		public ImageView imageView;
 		TextView FileName;
 		TextView FileSize;
@@ -121,4 +123,5 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 		dens = pFragment.sFiles;
 		//super.notifyDataSetChanged();
 	}
+
 }

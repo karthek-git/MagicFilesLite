@@ -9,7 +9,7 @@
 	<PreferenceCategory android:title="Sort order">
 		<SwitchPreference
 			android:defaultValue="true"
-			android:key="switch_preference_1"
+			android:key="prefs_sort_asc"
 			android:title="Ascending" />
 		<ListPreference
 			android:defaultValue="true"

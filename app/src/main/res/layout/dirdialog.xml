@@ -8,10 +8,11 @@
 		android:id="@+id/editDir"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_margin="16dp"
 		android:autofillHints="file"
 		android:hint="@string/NewDir"
 		android:inputType="text"
-		android:padding="30dp">
+		android:selectAllOnFocus="true">
 
 		<requestFocus />
 	</EditText>

@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="fic"
-        android:padding="15dp"
-        android:text="@string/app_name"
-        android:textAlignment="center"
-/>
+	<fragment
+		android:id="@+id/frag_media"
+		class="com.karthek.android.s.files.mediaFrag"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
 </LinearLayout>

@@ -18,6 +18,7 @@
 		android:nestedScrollingEnabled="true"
 		android:paddingBottom="80dp"
 		android:visibility="gone"
+		android:layoutAnimation="@anim/anim_layout_controller"
 		/>
 
 	<TextView

@@ -4,4 +4,5 @@
 	<style name="BlackSanUI" parent="android:Theme.DeviceDefault.DayNight">
 		<item name="android:windowBackground">@android:color/white</item>
 	</style>
+
 </resources>

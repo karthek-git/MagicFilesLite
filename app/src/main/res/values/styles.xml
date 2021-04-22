@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+	<style name="StorageAL">
+		<item name="android:stateListAnimator">@animator/animate_lsview_selector</item>
+		<item name="android:layout_marginStart">8dp</item>
+		<item name="android:layout_marginEnd">8dp</item>
+		<item name="android:layout_marginTop">24dp</item>
+		<item name="android:layout_marginBottom">24dp</item>
+		<item name="android:background">@drawable/smooth_edge_rect</item>
+		<item name="android:gravity">center</item>
+	</style>
+
 	<style name="head_info">
 		<item name="android:textSize">20sp</item>
 		<item name="android:layout_marginTop">18dp</item>
@@ -8,10 +18,27 @@
 		<item name="android:layout_marginBottom">8dp</item>
 		<item name="android:textAppearance">@android:style/TextAppearance.Material.Headline</item>
 	</style>
+
 	<style name="head_info_child">
-		<item name="android:layout_marginStart">18dp</item>
+		<item name="android:layout_marginStart">19dp</item>
 		<item name="android:layout_marginBottom">8dp</item>
+		<item name="android:layout_marginEnd">18dp</item>
 		<item name="android:textAppearance">@android:style/TextAppearance.Material.Small</item>
+	</style>
+
+	<style name="BlackSanUI.Button">
+		<item name="android:stateListAnimator">@animator/animate_lsview_selector</item>
+	</style>
+
+	<style name="media_cat">
+		<item name="android:stateListAnimator">@animator/animate_lsview_selector</item>
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_gravity">center</item>
+		<item name="android:layout_margin">4dp</item>
+		<item name="android:layout_rowWeight">1</item>
+		<item name="android:layout_columnWeight">1</item>
+		<item name="android:textColor">@color/colorMain</item>
+		<item name="android:text">@string/ellipse</item>
 	</style>
 
 </resources>

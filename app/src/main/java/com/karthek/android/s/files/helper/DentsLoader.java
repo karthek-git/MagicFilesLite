@@ -2,8 +2,8 @@ package com.karthek.android.s.files.helper;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import com.karthek.android.s.files.lsFrag;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -14,12 +14,15 @@ public class DentsLoader extends AsyncTaskLoader<SFile[]> implements FileFilter 
 	String Dir;
 	boolean showHidden;
 	int SType;
+	boolean sortAscending;
+	boolean loaded;
 
-	public DentsLoader(Context context, String dir) {
+	public DentsLoader(Context context, lsFrag lsFrag) {
 		super(context);
-		Dir = dir;
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-		showHidden = sharedPreferences.getBoolean("prefs_gen_a", false);
+		Dir = lsFrag.Cwd;
+		showHidden = lsFrag.showHidden;
+		SType = lsFrag.SType;
+		sortAscending = lsFrag.sortAscending;
 	}
 
 	@Override
@@ -37,15 +40,16 @@ public class DentsLoader extends AsyncTaskLoader<SFile[]> implements FileFilter 
 			for (int s = 0; s < files.length; s++) {
 				sFile[s] = new SFile(files[s]);
 			}
-			Arrays.sort(sFile, new FComparator(0));
+			Arrays.sort(sFile, new FComparator(SType, sortAscending));
 		}
+		loaded = true;
 		return sFile;
 	}
 
 	@Override
 	protected void onStartLoading() {
 		super.onStartLoading();
-		forceLoad();
+		if (!loaded) forceLoad();
 	}
 
 	@Override

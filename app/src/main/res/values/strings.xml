@@ -21,9 +21,21 @@
     <string name="rename">Rename</string>
     <string name="search_is">Search InternalStorage</string>
     <string name="share">Share</string>
-    <string name="stat">info</string>
+    <string name="stat">Info</string>
     <string name="unk">Unknown</string>
     <string name="file_options">File Options</string>
+    <string name="file_name">Name</string>
+	<string name="images">Images</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+	<string name="documents">Documents</string>
+    <string name="favourites">Favourites</string>
+    <string name="recent">Recent</string>
+    <string name="archives">Archives</string>
+    <string name="encrypted">Secure Folder</string>
+    <string name="ellipse">…</string>
+    <string name="storage_analyzer">Storage Analyzer</string>
+    <string name="trash">Trash</string>
 
     <plurals name="items">
         <item quantity="one">%d item</item>

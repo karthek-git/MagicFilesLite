@@ -38,7 +38,7 @@ public class lsView extends LinearLayout implements Checkable {
 
 	@Override
 	public void setChecked(boolean checked) {
-		System.out.println("setchecked " + checked);
+		//System.out.println("setchecked " + checked);
 		fChecked = checked;
 		refreshDrawableState();
 	}
