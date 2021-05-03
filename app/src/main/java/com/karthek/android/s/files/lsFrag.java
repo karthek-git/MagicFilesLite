@@ -107,7 +107,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	public void onResume() {
 		super.onResume();
 		ToastView = getLayoutInflater().inflate(R.layout.solid_toast,
-				(ViewGroup) context.findViewById(R.id.custom_toast_container));
+				context.findViewById(R.id.custom_toast_container));
 		ToastTextView = ToastView.findViewById(R.id.text);
 		toast = new Toast(context);
 		PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
@@ -160,12 +160,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		if (newText.length() > 1) {
 			getListView().setVisibility(View.GONE);
 			progressBar.setVisibility(View.VISIBLE);
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					getSearchFiles(newText);
-				}
-			}).start();
+			new Thread(() -> getSearchFiles(newText)).start();
 		}
 		return false;
 	}
@@ -338,12 +333,9 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 				if (fsize > size) {
 					size = fsize;
 					sFiles = fileArrayList.toArray(new SFile[0]);
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							((lsAdapter) getListAdapter()).notifyDataSetChanged();
-							setListAdapter(getListAdapter());
-						}
+					getActivity().runOnUiThread(() -> {
+						((lsAdapter) getListAdapter()).notifyDataSetChanged();
+						setListAdapter(getListAdapter());
 					});
 				}
 			}
@@ -391,13 +383,10 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		}
 		cursor.close();
 		sFiles = sFileList.toArray(new SFile[0]);
-		getActivity().runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				((lsAdapter) getListAdapter()).notifyDataSetChanged();
-				setListAdapter(getListAdapter());
-				progressBar.setVisibility(View.GONE);
-			}
+		getActivity().runOnUiThread(() -> {
+			((lsAdapter) getListAdapter()).notifyDataSetChanged();
+			setListAdapter(getListAdapter());
+			progressBar.setVisibility(View.GONE);
 		});
 	}
 

@@ -103,26 +103,19 @@ public class FilePreview implements Runnable {
 	}
 
 	private void setonUIThread(final int res) {
-		imageView.post(new Runnable() {
-			@Override
-			public void run() {
-				imageView.setImageResource(res);
-			}
-		});
+		imageView.post(() -> imageView.setImageResource(res));
 	}
 
 	private void setonUIThread(final Object icon) {
-		imageView.post(new Runnable() {
-			public void run() {
-				if (icon != null) {
-					if (icon instanceof Bitmap) {
-						if (viewHolder.pos == pos) {
-							imageView.setImageBitmap((Bitmap) icon);
-						}
-						frag.addBitmapToMemoryCache(filename, (Bitmap) icon);
-					} else {
-						imageView.setImageDrawable((Drawable) icon);
+		imageView.post(() -> {
+			if (icon != null) {
+				if (icon instanceof Bitmap) {
+					if (viewHolder.pos == pos) {
+						imageView.setImageBitmap((Bitmap) icon);
 					}
+					frag.addBitmapToMemoryCache(filename, (Bitmap) icon);
+				} else {
+					imageView.setImageDrawable((Drawable) icon);
 				}
 			}
 		});

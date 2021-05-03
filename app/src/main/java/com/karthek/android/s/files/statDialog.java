@@ -60,12 +60,7 @@ public class statDialog extends DialogFragment {
 						sFile.d_files,
 						sFile.d_dirs, sFile.d_files, formatShortFileSize(context, sFile.d_size)));
 			} else {
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						dSizeCal(sFile);
-					}
-				}).start();
+				new Thread(() -> dSizeCal(sFile)).start();
 			}
 			dialog.findViewById(R.id.textView_head_MIME).setVisibility(View.GONE);
 			dialog.findViewById(R.id.textView_head_MInfo).setVisibility(View.GONE);
@@ -96,14 +91,9 @@ public class statDialog extends DialogFragment {
 				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
 					dirs++;
 					if (shouldStop) return FileVisitResult.TERMINATE;
-					textViewSize.post(new Runnable() {
-										  @Override
-										  public void run() {
-											  textViewSize.setText(context.getResources().getQuantityString(R.plurals.d_items, files,
-													  dirs, files, formatShortFileSize(context,
-															  size)));
-										  }
-									  }
+					textViewSize.post(() -> textViewSize.setText(context.getResources().getQuantityString(R.plurals.d_items, files,
+							dirs, files, formatShortFileSize(context,
+									size)))
 
 					);
 					return super.postVisitDirectory(dir, exc);

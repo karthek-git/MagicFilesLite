@@ -141,14 +141,11 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 		@Override
 		public void run() {
 			dir.initDir();
-			textView.post(new Runnable() {
-				@Override
-				public void run() {
-					int size = (int) dir.size;
-					textView.setText(textView.getContext().getResources().getQuantityString(R.plurals.items,
-							size,
-							size));
-				}
+			textView.post(() -> {
+				int size = (int) dir.size;
+				textView.setText(textView.getContext().getResources().getQuantityString(R.plurals.items,
+						size,
+						size));
 			});
 		}
 	}

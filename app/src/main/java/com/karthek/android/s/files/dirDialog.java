@@ -3,7 +3,6 @@ package com.karthek.android.s.files;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,22 +41,16 @@ public class dirDialog extends DialogFragment {
 			case 4:
 				builder.setView(inflater.inflate(R.layout.dirdialog, null));
 				builder.setTitle(R.string.DescMkdir);
-				builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						((FActivity) getActivity()).m_fops_mkdir();
-					}
-				});
+				builder.setPositiveButton(android.R.string.ok, (dialog, id) -> ((FActivity) getActivity()).m_fops_mkdir());
 				builder.setNegativeButton(android.R.string.cancel, null);
 				break;
 			case 5:
 				builder.setMessage(R.string.play);
-				builder.setPositiveButton(android.R.string.search_go, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setData(Uri.parse("http://play.google.com/store/search?q=" + bundle.getString("FType") + "&c=apps"));
-						intent.setPackage("com.android.vending");
-						startActivity(intent);
-					}
+				builder.setPositiveButton(android.R.string.search_go, (dialog, id) -> {
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setData(Uri.parse("http://play.google.com/store/search?q=" + bundle.getString("FType") + "&c=apps"));
+					intent.setPackage("com.android.vending");
+					startActivity(intent);
 				});
 				builder.setNegativeButton(android.R.string.cancel, null);
 				break;

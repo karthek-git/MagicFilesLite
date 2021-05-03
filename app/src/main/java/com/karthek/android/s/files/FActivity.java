@@ -15,7 +15,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -85,7 +84,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 		lsView.setMultiChoiceModeListener(this);
 		toolbar = findViewById(R.id.t_fops);
 		ToastView = getLayoutInflater().inflate(R.layout.solid_toast,
-				(ViewGroup) findViewById(R.id.custom_toast_container));
+				findViewById(R.id.custom_toast_container));
 		ToastTextView = ToastView.findViewById(R.id.text);
 /*		ListView listView = findViewById(android.R.id.list);
 		listView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
@@ -391,12 +390,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 			}
 
 			private void inc() {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						progressDialog.incrementProgressBy(1);
-					}
-				});
+				runOnUiThread(() -> progressDialog.incrementProgressBy(1));
 			}
 		});
 
@@ -525,12 +519,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 			}
 
 			private void inc() {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						progressDialog.incrementProgressBy(1);
-					}
-				});
+				runOnUiThread(() -> progressDialog.incrementProgressBy(1));
 			}
 		});
 
