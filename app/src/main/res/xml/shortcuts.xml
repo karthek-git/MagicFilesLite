@@ -21,7 +21,7 @@
 			android:targetPackage="com.karthek.android.s.files">
 			<extra
 				android:name="p"
-				android:value="/storage/emulated/0/Download/" />
+				android:value="Download" />
 		</intent>
 	</shortcut>
 </shortcuts>

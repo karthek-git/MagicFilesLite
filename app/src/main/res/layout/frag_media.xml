@@ -9,9 +9,11 @@
 	tools:context=".MainActivity">
 
 	<LinearLayout
+		android:id="@+id/rt_anim_view"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="14dp"
+		android:layoutAnimation="@anim/anim_layout_controller"
 		android:orientation="vertical">
 
 		<GridLayout
@@ -32,6 +34,7 @@
 					android:layout_height="54dp"
 					android:background="@drawable/bg_media_img"
 					android:contentDescription="@string/images"
+					android:onClick="m_fops_img"
 					android:src="@drawable/ic_img_prev" />
 
 				<TextView

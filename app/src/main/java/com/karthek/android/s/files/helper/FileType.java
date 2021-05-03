@@ -8,27 +8,24 @@ import static java.nio.file.Files.probeContentType;
 
 public class FileType {
 
-	volatile static boolean Initialized;
-	static long MagicCookie;
+	long MagicCookie;
 
-
-	public static void InitializeFileType() {
-		Initialized = true;
+	public FileType() {
 		System.loadLibrary("magic-wrapper");
 		MagicCookie = c_magic_open();
 		System.out.println("mgc initttttttt");
 	}
 
-	private native synchronized static long c_magic_open();
+	private native synchronized long c_magic_open();
 
-	private native synchronized static String c_magic_descriptor(long magicCookie, int fd);
+	private native synchronized String c_magic_descriptor(long magicCookie, int fd);
 
-	private native synchronized static void c_magic_setflags(long magicCookie, int Flag);
+	private native synchronized void c_magic_setflags(long magicCookie, int Flag);
 
-	private native synchronized static String c_magic_error(long magicCookie);
+	private native synchronized String c_magic_error(long magicCookie);
 
 
-	public static String getFileMIMEType(String filename) {
+	public String getFileMIMEType(String filename) {
 		String string = null;
 		try {
 			string = probeContentType(Paths.get(filename));
@@ -41,11 +38,8 @@ public class FileType {
 		return string;
 	}
 
-	private synchronized static String getFileMIMETypeMGC(String filename) {
+	private String getFileMIMETypeMGC(String filename) {
 		String mime;
-		if (!Initialized) {
-			InitializeFileType();
-		}
 		int fd = getNativeFD(filename);
 		if (fd != -1) {
 			mime = c_magic_descriptor(MagicCookie, fd);
@@ -53,17 +47,14 @@ public class FileType {
 			if (mime == null) {
 				System.out.println(c_magic_error(MagicCookie));
 				return "application/octet-stream";
-			}else {
+			} else {
 				return mime;
 			}
 		}
 		return "application/octet-stream";
 	}
 
-	public synchronized static String getFileMInfo(String filename) {
-		if (!Initialized) {
-			InitializeFileType();
-		}
+	public String getFileMInfo(String filename) {
 		c_magic_setflags(MagicCookie, 1);
 		String string = c_magic_descriptor(MagicCookie, getNativeFD(filename));
 		c_magic_setflags(MagicCookie, 0);

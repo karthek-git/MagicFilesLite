@@ -3,28 +3,33 @@ package com.karthek.android.s.files;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.SearchManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileUtils;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.karthek.android.s.files.helper.FileType;
+import com.karthek.android.s.files.helper.SFile;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -33,12 +38,10 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static android.content.Intent.ACTION_SEND;
 import static android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION;
-import static android.text.format.Formatter.formatShortFileSize;
 import static java.nio.file.Files.walkFileTree;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -65,17 +68,25 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 
 	int grant = 0;
 
-	public static File selectedFile;
+	public SFile selectedFile;
 
-	final List<String> SelectedFileList = new ArrayList<>();
+	List<String> ClipBList;
+	List<String> SelectedFileList;
 	ListView lsView;
-	ImageButton addDirButton;
+	public ImageButton addDirButton;
+	SearchView searchView;
+	View ToastView;
+	TextView ToastTextView;
 
 	public void m4() {
 		lsView = listFragment.getListView();
 		addDirButton = findViewById(R.id.rel_new_dir);
 		lsView.setOnScrollListener(this);
 		lsView.setMultiChoiceModeListener(this);
+		toolbar = findViewById(R.id.t_fops);
+		ToastView = getLayoutInflater().inflate(R.layout.solid_toast,
+				(ViewGroup) findViewById(R.id.custom_toast_container));
+		ToastTextView = ToastView.findViewById(R.id.text);
 /*		ListView listView = findViewById(android.R.id.list);
 		listView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
 			@Override
@@ -144,10 +155,8 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.app_bar, menu);
 		getActionBar().setHideOnContentScrollEnabled(true);
-		SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
-		SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-		//searchView.setSearchableInfo(searchManager.getSearchableInfo(ComponentName
-		// .createRelative(this, ".SearchActivity")));
+		searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
+		searchView.setOnSearchClickListener(listFragment);
 		searchView.setOnQueryTextListener(listFragment);
 		searchView.setOnCloseListener(listFragment);
 
@@ -159,11 +168,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 		System.out.println("gttt");
 		int id = item.getItemId();
 		if (id == R.id.ab_paste) {
-			try {
-				t_fops_paste();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			t_fops_paste();
 		} else if (id == R.id.ab_customize) {
 			Bundle bundle = new Bundle();
 			bundle.putInt("FCase", 6);
@@ -189,7 +194,9 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 
 	@Override
 	public void onBackPressed() {
-		if (!(listFragment.xBackPressed())) {
+		if (!searchView.isIconified()) {
+			searchView.setIconified(true);
+		} else if (!(listFragment.xBackPressed())) {
 			super.onBackPressed();
 		}
 
@@ -211,7 +218,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		if (actionMode == null) {
+		if (searchView.isIconified() && !inActionMode) {
 			if (scrollState == SCROLL_STATE_IDLE) {
 				addDirButton.setVisibility(View.VISIBLE);
 			} else {
@@ -242,14 +249,18 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 	}
 
 	ActionMode actionMode;
+	boolean inActionMode;
+	Toolbar toolbar;
+
 
 	@Override
 	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		inActionMode = true;
 		addDirButton.setVisibility(View.GONE);
 		actionMode = mode;
+		SelectedFileList = new ArrayList<>();
 		mode.setTitle("Selected");
 		//getMenuInflater().inflate(R.menu.app_bar, menu);
-		Toolbar toolbar = findViewById(R.id.t_fops);
 		toolbar.setVisibility(View.VISIBLE);
 		System.out.println("ac created");
 		return true;
@@ -269,10 +280,9 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 
 	@Override
 	public void onDestroyActionMode(ActionMode mode) {
-		if (!Ccp) {
-			SelectedFileList.clear();
-		}
-		findViewById(R.id.t_fops).setVisibility(View.GONE);
+		inActionMode = false;
+		SelectedFileList = null;
+		toolbar.setVisibility(View.GONE);
 		addDirButton.setVisibility(View.VISIBLE);
 		System.out.println("ac destroyed");
 	}
@@ -285,30 +295,36 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 
 	public void m_fops(View view) {
 		lsAdapter.ViewHolder viewHolder = (lsAdapter.ViewHolder) ((View) view.getParent()).getTag();
-		selectedFile = viewHolder.sFile.file;
-		System.out.println(selectedFile);
+		selectedFile = viewHolder.sFile;
 		Bundle bundle = new Bundle();
 		bundle.putInt("FCase", 1);
 		dirdialog = new dirDialog();
 		dirdialog.setArguments(bundle);
 		dirdialog.show(getFragmentManager(), "dia");
+		/*sBottomDialog sBottomDialog = new sBottomDialog(this,R.style.BlackSanUI_Dialog);
+		sBottomDialog.show();*/
 	}
 
 	int clp_org = 0;
 	boolean Ccp;
 
 	public void m_fops_yks(View view) {
+		if (ClipBList != null) {
+			ClipBList.clear();
+		}
 		if (view.getId() == R.id.t_fops_ynk) {
 			clp_org = 1;
 		} else {
 			clp_org = 0;
 		}
 		if (selectedFile != null) {
-			SelectedFileList.add(selectedFile.getAbsolutePath());
+			ClipBList = new ArrayList<>();
+			ClipBList.add(selectedFile.file.getAbsolutePath());
 			selectedFile = null;
 		}
 		Ccp = true;
-		if (actionMode != null) {
+		if (inActionMode) {
+			ClipBList = SelectedFileList;
 			actionMode.finish();
 		} else {
 			dirdialog.dismiss();
@@ -317,55 +333,82 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 	}
 
 	public void m_fops_del(View view) {
-		if (selectedFile != null) {
-			SelectedFileList.add(selectedFile.getAbsolutePath());
-			selectedFile = null;
-		}
-		for (String SFile : SelectedFileList) {
-			try {
-				if (new File(SFile).isDirectory()) {
-					walkFileTree(Paths.get(SFile), new SimpleFileVisitor<Path>() {
-						@Override
-						public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-								throws IOException {
-							Files.delete(file);
-							return FileVisitResult.CONTINUE;
-						}
-
-						@Override
-						public FileVisitResult postVisitDirectory(Path dir, IOException e)
-								throws IOException {
-							if (e == null) {
-								Files.delete(dir);
-								return FileVisitResult.CONTINUE;
-							} else {
-								throw e;
-							}
-						}
-					});
-				} else {
-					Files.deleteIfExists(Paths.get(SFile));
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		SelectedFileList.clear();
-		if (actionMode != null) {
+		final List<String> DelList;
+		if (inActionMode) {
+			DelList = SelectedFileList;
 			actionMode.finish();
 		} else {
 			dirdialog.dismiss();
+			DelList = new ArrayList<>();
+			DelList.add(selectedFile.file.getAbsolutePath());
+			selectedFile = null;
 		}
-		listFragment.getLoaderManager().restartLoader(0, null, listFragment);
+
+		final ProgressDialog progressDialog = new ProgressDialog(this);
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		progressDialog.setMessage(getResources().getString(R.string.del_progress));
+		progressDialog.setMax(DelList.size());
+		progressDialog.show();
+
+		FApplication.executorService.execute(new Runnable() {
+			@Override
+			public void run() {
+				for (String SFile : DelList) {
+					try {
+						if (new File(SFile).isDirectory()) {
+							walkFileTree(Paths.get(SFile), new SimpleFileVisitor<Path>() {
+								@Override
+								public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+										throws IOException {
+									Files.delete(file);
+									inc();
+									return FileVisitResult.CONTINUE;
+								}
+
+								@Override
+								public FileVisitResult postVisitDirectory(Path dir, IOException e)
+										throws IOException {
+									if (e == null) {
+										Files.delete(dir);
+										inc();
+										return FileVisitResult.CONTINUE;
+									} else {
+										throw e;
+									}
+								}
+							});
+						} else {
+							Files.deleteIfExists(Paths.get(SFile));
+							inc();
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				progressDialog.dismiss();
+				DelList.clear();
+				listFragment.getLoaderManager().restartLoader(0, null, listFragment);
+			}
+
+			private void inc() {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						progressDialog.incrementProgressBy(1);
+					}
+				});
+			}
+		});
+
 	}
 
 
 	public void m_fops_share(View view) {
 		dirdialog.dismiss();
 		Intent intent = new Intent(ACTION_SEND);
-		String f = selectedFile.getAbsolutePath();
+		String f = selectedFile.file.getAbsolutePath();
 		intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("content://com.karthek.android.s.files.FProvider.file/" + Uri.encode(f)));
-		intent.setType(FileType.getFileMIMEType(f));
+		intent.setType(selectedFile.getMimeType());
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		startActivity(Intent.createChooser(intent, null));
 	}
@@ -380,23 +423,29 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 		dirdialog.show(getFragmentManager(), "dia");
 	}
 
-	int renm = 0;
+	int renm;
 
 	public void m_fops_mkdir() {
 		EditText editText = dirdialog.getDialog().findViewById(R.id.editDir);
+		String renameTo = editText.getText().toString();
 		if (renm == 1) {
 			renm = 0;
-			File file = selectedFile;
-			File dest = new File(selectedFile.getParent() + "/" + editText.getText());
+			File file = selectedFile.file;
+			File dest = new File(file.getParent(), renameTo);
+
 			if (!(file.renameTo(dest))) {
-				Toast.makeText(this, "Unable to Rename", Toast.LENGTH_SHORT).show();
+				ToastTextView.setText(R.string.rename_err);
 			} else {
-				Toast.makeText(this, selectedFile.getName() + " renamed to " + editText.getText(),
-						Toast.LENGTH_SHORT).show();
+				ToastTextView.setText(getResources().getString(R.string.renamed_holder, file.getName(),
+						renameTo));
 			}
+			Toast toast = new Toast(this);
+			toast.setView(ToastView);
+			toast.show();
 		} else {
 			try {
-				Files.createDirectory(Paths.get(listFragment.Cwd, String.valueOf(editText.getText())));
+				Files.createDirectory(Paths.get(listFragment.Cwd.getAbsolutePath(),
+						String.valueOf(editText.getText())));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -409,7 +458,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 		renm = 1;
 		Bundle bundle = new Bundle();
 		bundle.putInt("FCase", 4);
-		bundle.putString("renamefile", selectedFile.getName());
+		bundle.putString("renamefile", selectedFile.file.getName());
 		System.out.println(bundle.getString("renamefile"));
 		dirdialog.dismiss();
 		dirdialog = new dirDialog();
@@ -422,42 +471,71 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 	@SuppressWarnings("deprecation")
 	public void m_fops_stat(View view) {
 		//findViewById(R.id.fops_overlay).setVisibility(View.GONE);
-		File file = selectedFile;
-		Bundle bundle = new Bundle();
-		bundle.putString("FName", file.getName());
-		bundle.putString("size", formatShortFileSize(this, file.length()));
-		bundle.putString("MDate", new Date(file.lastModified()).toString());
-		bundle.putString("MIMEType", FileType.getFileMIMEType(file.getAbsolutePath()));
-		bundle.putString("MInfo", FileType.getFileMInfo(file.getAbsolutePath()));
-		bundle.putInt("FCase", 2);
 		dirdialog.dismiss();
-		dirdialog = new dirDialog();
-		dirdialog.setArguments(bundle);
-		dirdialog.show(getFragmentManager(), "info");
+		new statDialog().show(getFragmentManager(), "info");
 	}
 
-	public void t_fops_paste() throws IOException {
-		if (clp_org == 1) {
-			for (String SFile : SelectedFileList) {
-				Path path = Paths.get(SFile);
-				if (new File(SFile).isDirectory()) {
-					t_fops_paste_dir(path, Paths.get(listFragment.Cwd, String.valueOf(path.getFileName())), true);
-				} else {
-					Files.copy(path, Paths.get(listFragment.Cwd, String.valueOf(path.getFileName())), REPLACE_EXISTING);
+	public void t_fops_paste() {
+		final String CPath = listFragment.Cwd.getAbsolutePath();
+		final ProgressDialog progressDialog = new ProgressDialog(this);
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		progressDialog.setMessage(getResources().getString(R.string.progress_paste));
+		progressDialog.setMax(ClipBList.size());
+		progressDialog.show();
+		FApplication.executorService.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					paste();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
-		} else {
-			for (String SFile : SelectedFileList) {
-				Path path = Paths.get(SFile);
-				if (new File(SFile).isDirectory()) {
-					t_fops_paste_dir(path, Paths.get(listFragment.Cwd, String.valueOf(path.getFileName())), false);
+
+			private void paste() throws IOException {
+				if (clp_org == 1) {
+					for (String FileName : ClipBList) {
+						Path path = Paths.get(FileName);
+						if (new File(FileName).isDirectory()) {
+							t_fops_paste_dir(path, Paths.get(CPath, path.getFileName().toString()), true);
+						} else {
+							FileUtils.copy(new FileInputStream(FileName),
+									new FileOutputStream(CPath + "/" + path.getFileName()));
+							//Files.copy(path, Paths.get(CPath, FileName), REPLACE_EXISTING);
+						}
+						inc();
+					}
 				} else {
-					Files.move(path, Paths.get(listFragment.Cwd, String.valueOf(path.getFileName())), REPLACE_EXISTING);
+					for (String SFile : ClipBList) {
+						Path path = Paths.get(SFile);
+						if (new File(SFile).isDirectory()) {
+							t_fops_paste_dir(path, Paths.get(CPath, path.getFileName().toString()), false);
+						} else {
+							Files.move(path, Paths.get(CPath, path.getFileName().toString()),
+									REPLACE_EXISTING);
+						}
+						inc();
+					}
 				}
+				Ccp = false;
+				invalidateOptionsMenu();
+				ClipBList.clear();
+				progressDialog.dismiss();
+				listFragment.getLoaderManager().restartLoader(0, null, listFragment);
 			}
-		}
+
+			private void inc() {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						progressDialog.incrementProgressBy(1);
+					}
+				});
+			}
+		});
+
 		//m0(1);
-		listFragment.getLoaderManager().restartLoader(0, null, listFragment);
+
 	}
 
 	private void t_fops_paste_dir(final Path source, final Path target, final boolean org) throws IOException {
@@ -465,7 +543,9 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 				if (org) {
-					Files.copy(file, target.resolve(source.relativize(file)), REPLACE_EXISTING);
+					FileUtils.copy(new FileInputStream(file.toFile()),
+							new FileOutputStream(target.resolve(source.relativize(file)).toFile()));
+					//Files.copy(file, target.resolve(source.relativize(file)), REPLACE_EXISTING);
 				} else {
 					Files.move(file, target.resolve(source.relativize(file)), REPLACE_EXISTING);
 				}
@@ -479,6 +559,7 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 					Files.copy(dir, targetdir, REPLACE_EXISTING);
 				} else {
 					Files.move(dir, targetdir, REPLACE_EXISTING);
+					return FileVisitResult.SKIP_SIBLINGS;
 				}
 				return super.preVisitDirectory(dir, attrs);
 			}

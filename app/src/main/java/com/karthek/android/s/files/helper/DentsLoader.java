@@ -19,7 +19,7 @@ public class DentsLoader extends AsyncTaskLoader<SFile[]> implements FileFilter 
 
 	public DentsLoader(Context context, lsFrag lsFrag) {
 		super(context);
-		Dir = lsFrag.Cwd;
+		Dir = lsFrag.Cwd.getAbsolutePath();
 		showHidden = lsFrag.showHidden;
 		SType = lsFrag.SType;
 		sortAscending = lsFrag.sortAscending;
@@ -37,8 +37,14 @@ public class DentsLoader extends AsyncTaskLoader<SFile[]> implements FileFilter 
 		}
 		if (files != null) {
 			sFile = new SFile[files.length];
-			for (int s = 0; s < files.length; s++) {
-				sFile[s] = new SFile(files[s]);
+			if (SType == 2) {
+				for (int s = 0; s < files.length; s++) {
+					sFile[s] = new SFile(files[s], files[s].lastModified());
+				}
+			} else {
+				for (int s = 0; s < files.length; s++) {
+					sFile[s] = new SFile(files[s]);
+				}
 			}
 			Arrays.sort(sFile, new FComparator(SType, sortAscending));
 		}

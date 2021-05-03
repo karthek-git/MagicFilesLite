@@ -31,4 +31,8 @@
 		<item name="android:windowEnterAnimation">@anim/anim_dialog_show</item>
 	</style>
 
+	<style name="BlackSanUI.BottomDialog" parent="android:Theme.DeviceDefault.Dialog">
+
+	</style>
+
 </resources>

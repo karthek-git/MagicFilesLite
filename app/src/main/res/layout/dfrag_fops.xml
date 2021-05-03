@@ -3,9 +3,8 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:fitsSystemWindows="true"
-	android:theme="@style/BlackSanUI.Button"
 	android:orientation="vertical"
+	android:theme="@style/BlackSanUI.Button"
 	tools:context=".FActivity">
 
 	<TextView

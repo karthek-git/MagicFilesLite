@@ -1,6 +1,7 @@
 package com.karthek.android.s.files.helper;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import com.karthek.android.s.files.lsFrag;
 
 import java.io.File;
 import java.io.IOException;
+
 
 public class FilePreview implements Runnable {
 
@@ -39,7 +41,7 @@ public class FilePreview implements Runnable {
 
 	@Override
 	public void run() {
-		if(sFile.file.exists()) {
+		if (sFile.file.exists()) {
 			filename = sFile.file.getAbsolutePath();
 			setFilePreviewIcon();
 		}
@@ -48,12 +50,12 @@ public class FilePreview implements Runnable {
 	public void setFilePreviewIcon() {
 		Size size = new Size(100, 100);
 		Bitmap bitmap = null;
-		String FType = FileType.getFileMIMEType(filename);
+		String FType = sFile.getMimeType();
 		if (FType.startsWith("image/")) {
 			sFile.res = R.drawable.ic_img_prev;
 			try {
 				bitmap = ThumbnailUtils.createImageThumbnail(new File(filename), size, null);
-			} catch (IOException e) {
+			} catch (IOException | NumberFormatException e) {
 				setonUIThread(sFile.res);
 			}
 			if (bitmap != null)
@@ -78,7 +80,9 @@ public class FilePreview implements Runnable {
 				setonUIThread(bitmap);
 		} else if (FType.equals("application/vnd.android.package-archive")) {
 			PackageManager packageManager = context.getPackageManager();
-			setonUIThread(packageManager.getApplicationIcon(packageManager.getPackageArchiveInfo(filename, 0).applicationInfo));
+			PackageInfo packageInfo = packageManager.getPackageArchiveInfo(filename, 0);
+			if (packageInfo != null)
+				setonUIThread(packageManager.getApplicationIcon(packageInfo.applicationInfo));
 		} else if (FType.equals("application/pdf")) {
 			sFile.res = R.drawable.ic_pdf_prev;
 			try {

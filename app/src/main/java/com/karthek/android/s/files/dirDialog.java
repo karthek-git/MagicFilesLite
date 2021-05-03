@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -36,10 +37,6 @@ public class dirDialog extends DialogFragment {
 		switch (bundle.getInt("FCase")) {
 			case 1:
 				builder.setView(inflater.inflate(R.layout.dfrag_fops, null));
-				break;
-			case 2:
-				builder.setView(inflater.inflate(R.layout.frag_d_info, null));
-				builder.setPositiveButton(android.R.string.ok,null);
 				break;
 			case 3:
 			case 4:
@@ -95,27 +92,18 @@ public class dirDialog extends DialogFragment {
 		}
 		switch (FCase) {
 			case 1:
-				getDialog().getWindow().setGravity(Gravity.BOTTOM);
+				Window window=getDialog().getWindow();
+				window.setGravity(Gravity.BOTTOM);
+				window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				window.setBackgroundDrawableResource(R.color.colorMainBackGround);
 				break;
 			case 4:
+				//getDialog().setTitle(R.string.rename);
 				EditText editText = getDialog().findViewById(R.id.editDir);
 				editText.setText(renamefile, TextView.BufferType.NORMAL);
 				editText.selectAll();
 				//InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 				// inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-				break;
-			case 2:
-				TextView textView = getDialog().findViewById(R.id.FName);
-				assert bundle != null;
-				textView.setText(bundle.getString("FName"));
-				textView = getDialog().findViewById(R.id.textView_size);
-				textView.setText(bundle.getString("size"));
-				textView = getDialog().findViewById(R.id.textView_date);
-				textView.setText(bundle.getString("MDate"));
-				textView = getDialog().findViewById(R.id.textView_MIME);
-				textView.setText(bundle.getString("MIMEType"));
-				textView = getDialog().findViewById(R.id.textView_MInfo);
-				textView.setText(bundle.getString("MInfo"));
 				break;
 			case 6:
 				getChildFragmentManager().beginTransaction()

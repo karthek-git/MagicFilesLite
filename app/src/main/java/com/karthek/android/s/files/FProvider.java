@@ -8,11 +8,10 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 
-import com.karthek.android.s.files.helper.FileType;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import static com.karthek.android.s.files.FApplication.fileType;
 import static java.util.Arrays.copyOf;
 
 public class FProvider extends ContentProvider {
@@ -61,7 +60,7 @@ public class FProvider extends ContentProvider {
 
 	@Override
 	public String getType(Uri uri) {
-		return FileType.getFileMIMEType(getFileFromUri(uri).getAbsolutePath());
+		return fileType.getFileMIMEType(getFileFromUri(uri).getAbsolutePath());
 	}
 
 	@Override

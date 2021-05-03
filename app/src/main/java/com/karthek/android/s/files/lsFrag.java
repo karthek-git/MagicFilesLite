@@ -1,15 +1,19 @@
 package com.karthek.android.s.files;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -18,10 +22,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.karthek.android.s.files.helper.DentsLoader;
-import com.karthek.android.s.files.helper.FileType;
 import com.karthek.android.s.files.helper.SFile;
 
 import java.io.File;
@@ -30,20 +34,22 @@ import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import static android.content.Intent.ACTION_VIEW;
 import static java.nio.file.Files.walkFileTree;
 
 public class lsFrag extends ListFragment implements LoaderManager.LoaderCallbacks<SFile[]>,
-		SharedPreferences.OnSharedPreferenceChangeListener, SearchView.OnQueryTextListener,
+		SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener,
+		SearchView.OnQueryTextListener,
 		SearchView.OnCloseListener {
 
-	public String Cwd = "/storage/emulated/0/";
+	Activity context;
+	public File Cwd = Environment.getExternalStorageDirectory();
 	int NestChop = -1;
 	ProgressBar progressBar;
 	Stack<Parcelable> parcelableStack = new Stack<>();
@@ -53,6 +59,9 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	public boolean showHidden;
 	public int SType;
 	public boolean sortAscending;
+	View ToastView;
+	TextView ToastTextView;
+	Toast toast;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +75,14 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		};
 		String s = getActivity().getIntent().getStringExtra("p");
 		if (s != null) {
-			Cwd = s;
+			switch (s) {
+				case "Download":
+					Cwd =
+							Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+					break;
+				case "Recents":
+
+			}
 		}
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		showHidden = sharedPreferences.getBoolean("prefs_gen_a", false);
@@ -82,6 +98,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 				SType = 2;
 				break;
 		}
+		context = getActivity();
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -89,6 +106,10 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	@Override
 	public void onResume() {
 		super.onResume();
+		ToastView = getLayoutInflater().inflate(R.layout.solid_toast,
+				(ViewGroup) context.findViewById(R.id.custom_toast_container));
+		ToastTextView = ToastView.findViewById(R.id.text);
+		toast = new Toast(context);
 		PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
 	}
 
@@ -118,38 +139,41 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		super.onListItemClick(l, v, position, id);
 		parcelableStack.push(l.onSaveInstanceState());
 		lsAdapter.ViewHolder viewHolder = (lsAdapter.ViewHolder) v.getTag();
-		m2(viewHolder.sFile.file.getAbsolutePath());
+		m2(viewHolder.sFile);
 	}
 
 	boolean shouldStop = false;
 
 	@Override
+	public void onClick(View v) {
+		((FActivity) getActivity()).addDirButton.setVisibility(View.GONE);
+	}
+
+	@Override
 	public boolean onQueryTextSubmit(final String query) {
-		shouldStop = !shouldStop;
-		sFiles=null;
-		getListView().setVisibility(View.GONE);
-		progressBar.setVisibility(View.VISIBLE);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					goSearchFiles(query);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
 		return false;
 	}
 
 	@Override
 	public boolean onQueryTextChange(final String newText) {
+		sFiles = null;
+		if (newText.length() > 1) {
+			getListView().setVisibility(View.GONE);
+			progressBar.setVisibility(View.VISIBLE);
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					getSearchFiles(newText);
+				}
+			}).start();
+		}
 		return false;
 	}
 
 	@Override
 	public boolean onClose() {
-		getLoaderManager().restartLoader(0,null,this);
+		((FActivity) getActivity()).addDirButton.setVisibility(View.VISIBLE);
+		getLoaderManager().restartLoader(0, null, this);
 		return false;
 	}
 
@@ -214,36 +238,26 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 
 	public boolean xBackPressed() {
 		if (NestChop != 0) {
-			m0(0);
+			m0();
 			return true;
 		}
 		return false;
 	}
 
 
-	public void m0(int flg) {
-		System.out.println("m0:" + Cwd);
-		//findViewById(R.id.fops_overlay).setVisibility(View.GONE);
-		File file = new File(Cwd);
-		String tmp;
-		if (flg == 0) {
-			curState = parcelableStack.pop();
-			file = file.getParentFile();
-		}
-		if (file != null) {
-			tmp = file.getAbsolutePath();
-			NestChop--;
-			Cwd = tmp + "/";
-			progressBar.setVisibility(View.VISIBLE);
-			getListView().setVisibility(View.GONE);
-			getLoaderManager().restartLoader(0, null, this);
-		}
+	private void m0() {
+		File file = Cwd;
+		curState = parcelableStack.pop();
+		Cwd = file.getParentFile();
+		NestChop--;
+		progressBar.setVisibility(View.VISIBLE);
+		getListView().setVisibility(View.GONE);
+		getLoaderManager().restartLoader(0, null, this);
 	}
 
-	public void m2(String tmp) {
-		File ftmp = new File(tmp);
-		if (ftmp.isDirectory()) {
-			Cwd = tmp + "/";
+	private void m2(SFile sFile) {
+		if (sFile.isDir) {
+			Cwd = sFile.file;
 			System.out.println(Cwd);
 			NestChop++;
 			getListView().setVisibility(View.GONE);
@@ -253,14 +267,21 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 			//FArchive.listArchiveEntries(ftmp.getAbsolutePath());
 			//FArchive.extractArchive(ftmp.getAbsolutePath());
 			Intent intent = new Intent(ACTION_VIEW);
-			String FType = FileType.getFileMIMEType(tmp);
-			intent.setDataAndType(Uri.parse("content://com.karthek.android.s.files.FProvider.file/" + Uri.encode(tmp)), FType);
+			String FType = sFile.getMimeType();
+			intent.setDataAndType(Uri.parse("content://com.karthek.android.s.files.FProvider" +
+					".file/" + Uri.encode(sFile.file.getAbsolutePath())), FType);
 			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 			try {
 				startActivity(intent);
 			} catch (Exception e) {
-				if (ftmp.length() == 0) {
-					Toast.makeText(getActivity(), "empty file", Toast.LENGTH_SHORT).show();
+				if (sFile.size == 0) {
+					ToastTextView.setText("empty file");
+					toast.setView(ToastView);
+					toast.show();
+				} else if (FType.equals("application/octet-stream")) {
+					intent.setDataAndTypeAndNormalize(Uri.parse("content://com.karthek.android.s.files.FProvider" +
+							".file/" + Uri.encode(sFile.file.getAbsolutePath())), "*/*");
+					startActivity(intent);
 				} else {
 					Bundle bundle = new Bundle();
 					bundle.putInt("FCase", 5);
@@ -276,10 +297,10 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	}
 
 	private void goSearchFiles(String query) throws IOException {
-		shouldStop=false;
+		shouldStop = false;
 		final ArrayList<SFile> fileArrayList = new ArrayList<>();
 		final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**" + query + "**");
-		walkFileTree(Paths.get("/storage/emulated/0"), new SimpleFileVisitor<Path>() {
+		walkFileTree(Cwd.toPath(), new SimpleFileVisitor<Path>() {
 			int size = 0;
 
 			@Override
@@ -328,6 +349,56 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 			}
 		});
 
+	}
+
+	private void getSearchFiles(String query) {
+		String relPath = "";
+		Path CPath = Cwd.toPath();
+		if (CPath.getNameCount() > 3) {
+			relPath = CPath.subpath(3, CPath.getNameCount()).toString();
+		}
+		List<SFile> sFileList = new ArrayList<>();
+		Uri uri = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL);
+		String[] projection = new String[]{
+				MediaStore.Files.FileColumns.DATA,
+				MediaStore.Files.FileColumns.DISPLAY_NAME,
+				MediaStore.Files.FileColumns.SIZE,
+				MediaStore.Files.FileColumns.DATE_MODIFIED,
+				MediaStore.Files.FileColumns.MIME_TYPE,
+		};
+
+		String selection =
+				MediaStore.Files.FileColumns.RELATIVE_PATH + " LIKE " + "'" + relPath + "%'" + " and" +
+						" " + MediaStore.Files.FileColumns.DISPLAY_NAME + " LIKE " +
+						"'%" + query + "%'";
+
+		Cursor cursor = getActivity().getApplicationContext().getContentResolver().query(uri,
+				projection, selection, null, null);
+
+		int pathColumn = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+		int nameColumn = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME);
+		int sizeColumn = cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE);
+		int lmColumn = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED);
+		int mimeColumn = cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE);
+
+		while (cursor.moveToNext()) {
+			String path = cursor.getString(pathColumn);
+			String name = cursor.getString(nameColumn);
+			long size = cursor.getLong(sizeColumn);
+			long lm = cursor.getLong(lmColumn) * 1000;
+			String mime = cursor.getString(mimeColumn);
+			sFileList.add(new SFile(new File(path), size, lm, mime));
+		}
+		cursor.close();
+		sFiles = sFileList.toArray(new SFile[0]);
+		getActivity().runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				((lsAdapter) getListAdapter()).notifyDataSetChanged();
+				setListAdapter(getListAdapter());
+				progressBar.setVisibility(View.GONE);
+			}
+		});
 	}
 
 	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {

@@ -25,7 +25,8 @@ public class FComparator implements Comparator<SFile> {
 
 			switch (SType) {
 				case 0:
-					return asc ? o1.file.compareTo(o2.file) : o2.file.compareTo(o1.file);
+					return asc ? o1.file.getName().compareToIgnoreCase(o2.file.getName()) :
+							o2.file.getName().compareToIgnoreCase(o1.file.getName());
 				case 1:
 					return asc ? Long.compare(o1.size, o2.size) : Long.compare(o2.size, o1.size);
 				case 2:

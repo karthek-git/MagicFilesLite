@@ -48,7 +48,7 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder viewHolder;
+		final ViewHolder viewHolder;
 		if (convertView == null) {
 			System.out.println("getview:" + position);
 
@@ -72,7 +72,11 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 		if (dens[position].isDir) {
 			viewHolder.imageView.setImageResource(R.drawable.ic_dir_prev);
 			int size = (int) dens[position].size;
-			viewHolder.FileSize.setText(viewHolder.context.getResources().getQuantityString(R.plurals.items, size, size));
+			if (size == -1) {
+				FApplication.executorService.execute(new lsDir(viewHolder.sFile, viewHolder.FileSize));
+			} else {
+				viewHolder.FileSize.setText(viewHolder.context.getResources().getQuantityString(R.plurals.items, size, size));
+			}
 		} else {
 			viewHolder.FileSize.setText(Formatter.formatFileSize(viewHolder.context, dens[position].size));
 			Bitmap bitmap = pFragment.getBitmapFromMemCache(dens[position].file.getAbsolutePath());
@@ -122,6 +126,31 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 	public void notifyDataSetChanged() {
 		dens = pFragment.sFiles;
 		//super.notifyDataSetChanged();
+	}
+
+	private static class lsDir implements Runnable {
+
+		SFile dir;
+		TextView textView;
+
+		public lsDir(SFile dir, TextView textView) {
+			this.dir = dir;
+			this.textView = textView;
+		}
+
+		@Override
+		public void run() {
+			dir.initDir();
+			textView.post(new Runnable() {
+				@Override
+				public void run() {
+					int size = (int) dir.size;
+					textView.setText(textView.getContext().getResources().getQuantityString(R.plurals.items,
+							size,
+							size));
+				}
+			});
+		}
 	}
 
 }

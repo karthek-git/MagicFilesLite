@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
 	<style name="BlackSanUI" parent="android:Theme.DeviceDefault.DayNight">
+		<item name="android:windowActionBarOverlay">true</item>
 		<item name="android:windowBackground">@android:color/white</item>
+		<item name="android:windowActivityTransitions">true</item>
+		<item name="android:alertDialogTheme">@style/BlackSanUI.Dialog</item>
 	</style>
 
+	<style name="BlackSanUI.Dialog" parent="android:Theme.DeviceDefault.Light.Dialog.Alert">
+		<item name="android:dialogCornerRadius">14dp</item>
+		<item name="android:windowSoftInputMode">stateVisible</item>
+		<item name="android:windowAnimationStyle">@style/BlackSanUI_Dialog_show</item>
+	</style>
+
+	<style name="BlackSanUI_Dialog_show">
+		<item name="android:windowEnterAnimation">@anim/anim_dialog_show</item>
+	</style>
 </resources>
