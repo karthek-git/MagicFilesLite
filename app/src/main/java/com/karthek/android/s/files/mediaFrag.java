@@ -36,7 +36,7 @@ public class mediaFrag extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
-		getSearchFiles();
+		//getSearchFiles();
 		/*getVid();
 		FApplication.sFiles = new SFile[sFiles.size()];
 		for (int s = 0; s < sFiles.size(); s++) {

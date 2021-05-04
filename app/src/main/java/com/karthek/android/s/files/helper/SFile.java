@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class SFile {
 	public File file;
-	public long size=-1;
+	public long size = -1;
 	public long modified;
 	public boolean isDir;
 	public boolean d_traversed;
@@ -26,30 +26,21 @@ public class SFile {
 
 	public SFile(File file) {
 		this.file = file;
-		if (file.isDirectory()) {
-			isDir=true;
-		} else {
-			size = file.length();
-		}
+		if (file.isDirectory()) isDir = true;
+		else size = file.length();
 	}
 
 	public SFile(File file, long modified) {
 		this.file = file;
-		if (file.isDirectory()) {
-			isDir=true;
-		} else {
-			size = file.length();
-		}
+		if (file.isDirectory()) isDir = true;
+		else size = file.length();
 		this.modified = modified;
 	}
 
 	public SFile(File file, long size, long modified, String mime) {
 		this.file = file;
-		if (mime == null && file.isDirectory()) {
-			isDir=true;
-		} else {
-			this.size = size;
-		}
+		if (mime == null && file.isDirectory()) isDir = true;
+		else this.size = size;
 		this.modified = modified;
 	}
 
@@ -58,13 +49,13 @@ public class SFile {
 			size = Objects.requireNonNull(file.list()).length;
 		} catch (Exception e) {
 			e.printStackTrace();
+			size = 0;
 		}
 	}
 
 	public String getMimeType() {
-		if (mimeType == null) {
+		if (mimeType == null)
 			mimeType = FApplication.fileType.getFileMIMEType(file.getAbsolutePath());
-		}
 		return mimeType;
 	}
 
@@ -77,5 +68,12 @@ public class SFile {
 			Log.v("natic", filename);
 		}
 		return parcelFileDescriptor != null ? parcelFileDescriptor.detachFd() : -1;
+	}
+
+	@Override
+	public String toString() {
+		return "SFile{" +
+				"file=" + file.getAbsolutePath() +
+				'}';
 	}
 }

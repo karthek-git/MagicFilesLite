@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileUtils;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +52,9 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if(selectedFile!=null)
+			Log.v("sel","got"+selectedFile);
+		else Log.v("sel","gotnull");
 		setContentView(R.layout.activity_f);
 		System.out.println("called oncreate\n");
 		String[] perms = new String[1];
@@ -104,6 +108,9 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 	@Override
 	protected void onStart() {
 		super.onStart();
+		if(selectedFile!=null)
+			Log.v("sel","got"+selectedFile);
+		else Log.v("sel","gotnull");
 		Toolbar toolbar = findViewById(R.id.t_fops);
 		//getMenuInflater().inflate(R.menu.t_fops, toolbar.getMenu());
 		toolbar.setOnMenuItemClickListener(this);
@@ -113,40 +120,49 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if(selectedFile!=null)
+			Log.v("sel","got"+selectedFile);
+		else Log.v("sel","gotnull");
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			if (Environment.isExternalStorageManager()) m4();
 		}
-		if (!new File(getFilesDir(), "magic.mgc").exists()) {
-			try {
-				Files.copy(getAssets().open("magic.mgc"), Paths.get(this.getFilesDir().toString(), "magic.mgc"));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+
 		System.out.println("called onresume");
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		if(selectedFile!=null)
+			Log.v("sel","got"+selectedFile);
+		else Log.v("sel","gotnull");
 		System.out.println("called onpause");
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
+		if(selectedFile!=null)
+			Log.v("sel","got"+selectedFile);
+		else Log.v("sel","gotnull");
 		System.out.println("called onstop");
 	}
 
 	@Override
 	protected void onRestart() {
 		super.onRestart();
+		if(selectedFile!=null)
+			Log.v("sel","got"+selectedFile);
+		else Log.v("sel","gotnull");
 		System.out.println("called onrestart");
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if(selectedFile!=null)
+			Log.v("sel","got"+selectedFile);
+		else Log.v("sel","gotnull");
 		System.out.println("called ondestroy");
 	}
 

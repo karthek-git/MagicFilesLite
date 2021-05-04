@@ -1,5 +1,8 @@
 package com.karthek.android.s.files.helper;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -10,13 +13,13 @@ public class FileType {
 
 	long MagicCookie;
 
-	public FileType() {
+	public FileType(Context context) {
 		System.loadLibrary("magic-wrapper");
-		MagicCookie = c_magic_open();
+		MagicCookie = c_magic_open(context.getAssets());
 		System.out.println("mgc initttttttt");
 	}
 
-	private native synchronized long c_magic_open();
+	private native synchronized long c_magic_open(AssetManager assetManager);
 
 	private native synchronized String c_magic_descriptor(long magicCookie, int fd);
 

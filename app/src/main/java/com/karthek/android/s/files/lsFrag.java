@@ -63,9 +63,11 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	TextView ToastTextView;
 	Toast toast;
 
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
 		int cacheSize = (int) ((Runtime.getRuntime().maxMemory()) / 1024);
 		bitmapLruCache = new LruCache<String, Bitmap>(cacheSize) {
 			@Override
@@ -125,6 +127,10 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		return inflater.inflate(R.layout.frag_list, container, false);
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {

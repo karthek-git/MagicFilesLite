@@ -1,77 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:elevation="15dp"
-	android:orientation="vertical">
+	android:layout_height="match_parent">
 
-	<TextView
-		style="@style/head_info"
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/file_path" />
+		android:elevation="15dp"
+		android:orientation="vertical">
 
-	<TextView
-		android:id="@+id/FPath"
-		style="@style/head_info_child"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/app_name" />
+		<TextView
+			style="@style/head_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/file_path" />
 
-	<TextView
-		android:id="@+id/textView13"
-		style="@style/head_info"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/FSize" />
+		<TextView
+			android:id="@+id/FPath"
+			style="@style/head_info_child"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/app_name" />
 
-	<TextView
-		android:id="@+id/textView_size"
-		style="@style/head_info_child"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/unk" />
+		<TextView
+			android:id="@+id/textView13"
+			style="@style/head_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/FSize" />
 
-	<TextView
-		android:id="@+id/textView14"
-		style="@style/head_info"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/MDate" />
+		<TextView
+			android:id="@+id/textView_size"
+			style="@style/head_info_child"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/unk" />
 
-	<TextView
-		android:id="@+id/textView_date"
-		style="@style/head_info_child"
+		<TextView
+			android:id="@+id/textView14"
+			style="@style/head_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/MDate" />
 
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/unk" />
+		<TextView
+			android:id="@+id/textView_date"
+			style="@style/head_info_child"
 
-	<TextView
-		android:id="@+id/textView_head_MIME"
-		style="@style/head_info"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/MType" />
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/unk" />
 
-	<TextView
-		android:id="@+id/textView_MIME"
-		style="@style/head_info_child"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/unk" />
+		<TextView
+			android:id="@+id/textView_head_MIME"
+			style="@style/head_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/MType" />
 
-	<TextView
-		android:id="@+id/textView_head_MInfo"
-		style="@style/head_info"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/file_info" />
+		<TextView
+			android:id="@+id/textView_MIME"
+			style="@style/head_info_child"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/unk" />
 
-	<TextView
-		android:id="@+id/textView_MInfo"
-		style="@style/head_info_child"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/unk" />
-</LinearLayout>
+		<TextView
+			android:id="@+id/textView_head_MInfo"
+			style="@style/head_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/file_info" />
+
+		<TextView
+			android:id="@+id/textView_MInfo"
+			style="@style/head_info_child"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/unk" />
+	</LinearLayout>
+</ScrollView>

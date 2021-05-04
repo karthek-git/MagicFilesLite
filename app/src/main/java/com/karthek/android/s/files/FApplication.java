@@ -11,13 +11,16 @@ import java.util.concurrent.Executors;
 
 public class FApplication extends Application {
 	static SFile[] sFiles;
-	public static FileType fileType=new FileType();
+	public static FileType fileType;
 	static ExecutorService executorService =
 			Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		fileType = new FileType(this);
 		Log.v("fapp", "app created");
 	}
+
+
 }

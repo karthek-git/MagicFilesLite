@@ -73,7 +73,7 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 			viewHolder.imageView.setImageResource(R.drawable.ic_dir_prev);
 			int size = (int) dens[position].size;
 			if (size == -1) {
-				FApplication.executorService.execute(new lsDir(viewHolder.sFile, viewHolder.FileSize));
+				FApplication.executorService.execute(new lsDir(viewHolder.sFile, viewHolder, position));
 			} else {
 				viewHolder.FileSize.setText(viewHolder.context.getResources().getQuantityString(R.plurals.items, size, size));
 			}
@@ -131,22 +131,26 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 	private static class lsDir implements Runnable {
 
 		SFile dir;
-		TextView textView;
+		ViewHolder viewHolder;
+		int position;
 
-		public lsDir(SFile dir, TextView textView) {
+		public lsDir(SFile dir, ViewHolder viewHolder, int position) {
 			this.dir = dir;
-			this.textView = textView;
+			this.viewHolder = viewHolder;
+			this.position = position;
 		}
 
 		@Override
 		public void run() {
 			dir.initDir();
-			textView.post(() -> {
-				int size = (int) dir.size;
-				textView.setText(textView.getContext().getResources().getQuantityString(R.plurals.items,
-						size,
-						size));
-			});
+			if (viewHolder.pos == position) {
+				viewHolder.FileSize.post(() -> {
+					int size = (int) dir.size;
+					viewHolder.FileSize.setText(viewHolder.context.getResources().getQuantityString(R.plurals.items,
+							size,
+							size));
+				});
+			}
 		}
 	}
 

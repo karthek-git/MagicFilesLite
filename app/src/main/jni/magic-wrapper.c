@@ -9,10 +9,23 @@
 #include <include/archive.h>
 #include <include/archive_entry.h>
 
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
+
+
+jobject asset_g_ref;
+
 JNIEXPORT jlong JNICALL
-Java_com_karthek_android_s_files_helper_FileType_c_1magic_1open(JNIEnv *env, jclass clazz) {
+Java_com_karthek_android_s_files_helper_FileType_c_1magic_1open(JNIEnv *env, jclass clazz,
+																jobject asset_manager) {
 	magic_t magic = magic_open(MAGIC_MIME_TYPE);
-	magic_load(magic, "/data/user/0/com.karthek.android.s.files/files/magic.mgc");
+	//magic_load(magic, "/data/user/0/com.karthek.android.s.files/files/magic.mgc");
+	asset_g_ref = (*env)->NewGlobalRef(env, asset_manager);
+	AAsset *asset = AAssetManager_open(AAssetManager_fromJava(env, asset_g_ref), "magic.mgc",
+									   O_RDONLY);
+	const void *buffers[] = {AAsset_getBuffer(asset)};
+	size_t sizes[] = {AAsset_getLength(asset)};
+	magic_load_buffers(magic, (void **) buffers, sizes, 1);
 	return (long) magic;
 }
 

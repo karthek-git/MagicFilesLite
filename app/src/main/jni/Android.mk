@@ -3,7 +3,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := magic-wrapper
 LOCAL_SRC_FILES := magic-wrapper.c
 LOCAL_SHARED_LIBRARIES := magic archive lzma
-LOCAL_LDLIBS := -lz
+LOCAL_LDLIBS := -landroid -lz
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
