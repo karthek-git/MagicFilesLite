@@ -11,21 +11,19 @@ import static java.nio.file.Files.probeContentType;
 
 public class FileType {
 
-	long MagicCookie;
-
 	public FileType(Context context) {
 		System.loadLibrary("magic-wrapper");
-		MagicCookie = c_magic_open(context.getAssets());
+		c_magic_open(context.getAssets());
 		System.out.println("mgc initttttttt");
 	}
 
-	private native synchronized long c_magic_open(AssetManager assetManager);
+	private native synchronized int c_magic_open(AssetManager assetManager);
 
-	private native synchronized String c_magic_descriptor(long magicCookie, int fd);
+	private native synchronized String c_magic_descriptor(int fd);
 
-	private native synchronized void c_magic_setflags(long magicCookie, int Flag);
+	private native synchronized void c_magic_setflags(int Flag);
 
-	private native synchronized String c_magic_error(long magicCookie);
+	private native synchronized String c_magic_error();
 
 
 	public String getFileMIMEType(String filename) {
@@ -45,10 +43,10 @@ public class FileType {
 		String mime;
 		int fd = getNativeFD(filename);
 		if (fd != -1) {
-			mime = c_magic_descriptor(MagicCookie, fd);
+			mime = c_magic_descriptor(fd);
 			System.out.println("from file:" + mime);
 			if (mime == null) {
-				System.out.println(c_magic_error(MagicCookie));
+				System.out.println(c_magic_error());
 				return "application/octet-stream";
 			} else {
 				return mime;
@@ -58,9 +56,9 @@ public class FileType {
 	}
 
 	public String getFileMInfo(String filename) {
-		c_magic_setflags(MagicCookie, 1);
-		String string = c_magic_descriptor(MagicCookie, getNativeFD(filename));
-		c_magic_setflags(MagicCookie, 0);
+		c_magic_setflags(1);
+		String string = c_magic_descriptor(getNativeFD(filename));
+		c_magic_setflags(0);
 		System.out.println(string);
 		return string;
 	}

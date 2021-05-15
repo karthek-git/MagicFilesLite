@@ -1,3 +1,4 @@
+#include <limits.h>
 //
 // Created by karthik on 3/21/21.
 //
@@ -13,20 +14,26 @@
 #include <android/asset_manager_jni.h>
 
 
+magic_t magic_cookie;
 jobject asset_g_ref;
 
-JNIEXPORT jlong JNICALL
-Java_com_karthek_android_s_files_helper_FileType_c_1magic_1open(JNIEnv *env, jclass clazz,
+JNIEXPORT jint JNICALL
+Java_com_karthek_android_s_files_helper_FileType_c_1magic_1open(JNIEnv *env,
+																__unused jclass clazz,
 																jobject asset_manager) {
-	magic_t magic = magic_open(MAGIC_MIME_TYPE);
+	magic_cookie = magic_open(MAGIC_MIME_TYPE);
 	//magic_load(magic, "/data/user/0/com.karthek.android.s.files/files/magic.mgc");
 	asset_g_ref = (*env)->NewGlobalRef(env, asset_manager);
-	AAsset *asset = AAssetManager_open(AAssetManager_fromJava(env, asset_g_ref), "magic.mgc",
+	AAsset *asset = AAssetManager_open(AAssetManager_fromJava(env, asset_g_ref),
+									   "magic.mgc",
 									   O_RDONLY);
-	const void *buffers[] = {AAsset_getBuffer(asset)};
+	void *buf = (void *) AAsset_getBuffer(asset);
+	if (buf == NULL)
+		return -1;
+	void *buffers[] = {buf};
 	size_t sizes[] = {AAsset_getLength(asset)};
-	magic_load_buffers(magic, (void **) buffers, sizes, 1);
-	return (long) magic;
+	magic_load_buffers(magic_cookie, buffers, sizes, 1);
+	return 0;
 }
 
 #ifdef NATIVE_SYNC
@@ -34,12 +41,14 @@ pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
 JNIEXPORT jstring JNICALL
-Java_com_karthek_android_s_files_helper_FileType_c_1magic_1descriptor(JNIEnv *env, jobject thiz,
-																	  jlong cookie, jint fd) {
+Java_com_karthek_android_s_files_helper_FileType_c_1magic_1descriptor(
+		JNIEnv *env,
+		__unused jobject thiz,
+		jint fd) {
 #ifdef NATIVE_SYNC
 	pthread_mutex_lock(&mtx);
 #endif
-	jstring ret = (*env)->NewStringUTF(env, magic_descriptor((magic_t) cookie, fd));
+	jstring ret = (*env)->NewStringUTF(env, magic_descriptor(magic_cookie, fd));
 	close(fd);
 #ifdef NATIVE_SYNC
 	pthread_mutex_unlock(&mtx);
@@ -48,20 +57,20 @@ Java_com_karthek_android_s_files_helper_FileType_c_1magic_1descriptor(JNIEnv *en
 }
 
 JNIEXPORT void JNICALL
-Java_com_karthek_android_s_files_helper_FileType_c_1magic_1setflags(JNIEnv *env, jobject thiz,
-																	jlong cookie,
+Java_com_karthek_android_s_files_helper_FileType_c_1magic_1setflags(__unused JNIEnv *env,
+																	__unused jobject thiz,
 																	jint flag) {
 	if (flag == 1) {
-		magic_setflags((magic_t) cookie, 0);
+		magic_setflags(magic_cookie, 0);
 	} else {
-		magic_setflags((magic_t) cookie, MAGIC_MIME_TYPE);
+		magic_setflags(magic_cookie, MAGIC_MIME_TYPE);
 	}
 }
 
 JNIEXPORT jstring JNICALL
-Java_com_karthek_android_s_files_helper_FileType_c_1magic_1error(JNIEnv *env, jclass clazz,
-																 jlong magic_cookie) {
-	return (*env)->NewStringUTF(env, magic_error((magic_t) magic_cookie));
+Java_com_karthek_android_s_files_helper_FileType_c_1magic_1error(JNIEnv *env,
+																 __unused jclass clazz) {
+	return (*env)->NewStringUTF(env, magic_error(magic_cookie));
 }
 
 
@@ -70,7 +79,8 @@ struct archive_entry *entry;
 int r;
 
 JNIEXPORT jlong JNICALL
-Java_com_karthek_android_s_files_helper_FArchive_c_1archive_1list(JNIEnv *env, jclass clazz,
+Java_com_karthek_android_s_files_helper_FArchive_c_1archive_1list(__unused JNIEnv *env,
+																  __unused jclass clazz,
 																  jint fd) {
 	a = archive_read_new();
 	archive_read_support_filter_all(a);
@@ -92,8 +102,10 @@ Java_com_karthek_android_s_files_helper_FArchive_c_1archive_1list(JNIEnv *env, j
 
 
 JNIEXPORT jint JNICALL
-Java_com_karthek_android_s_files_helper_FArchive_c_1archive_1extract(JNIEnv *env, jclass clazz,
-																	 jint fd, jstring target) {
+Java_com_karthek_android_s_files_helper_FArchive_c_1archive_1extract(JNIEnv *env,
+																	 __unused jclass clazz,
+																	 jint fd,
+																	 jstring target) {
 	a = archive_read_new();
 	archive_read_support_filter_all(a);
 	archive_read_support_format_all(a);

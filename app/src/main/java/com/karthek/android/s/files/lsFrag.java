@@ -269,7 +269,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 			//FArchive.extractArchive(ftmp.getAbsolutePath());
 			Intent intent = new Intent(ACTION_VIEW);
 			String FType = sFile.getMimeType();
-			intent.setDataAndType(Uri.parse("content://com.karthek.android.s.files.FProvider" +
+			intent.setDataAndTypeAndNormalize(Uri.parse("content://com.karthek.android.s.files.FProvider" +
 					".file/" + Uri.encode(sFile.file.getAbsolutePath())), FType);
 			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 			try {
