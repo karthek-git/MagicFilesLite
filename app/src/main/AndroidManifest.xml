@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	package="com.karthek.android.s.files"
-	android:versionCode="1"
-	android:versionName="1.0">
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission
@@ -21,9 +18,8 @@
 		android:supportsRtl="true"
 		android:theme="@style/BlackSanUI">
 		<activity
-			android:name="com.karthek.android.s.files.FActivity"
-			android:parentActivityName=".MainActivity" />
-		<activity android:name="com.karthek.android.s.files.MainActivity">
+			android:name=".FActivity"
+			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -33,7 +29,11 @@
 				android:resource="@xml/shortcuts" />
 		</activity>
 		<activity
-			android:name="com.karthek.android.s.files.FArchiveActivity"
+			android:name=".MainActivity"
+			android:exported="true" />
+		<activity
+			android:name=".FArchiveActivity"
+			android:exported="true"
 			android:theme="@style/BlackSanUI.Dialog">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
@@ -75,7 +75,7 @@
 				<data android:mimeType="application/x-cpio" />
 				<data android:mimeType="application/x-archive" />
 				<data android:mimeType="application/x-xar" />
-				<data android:mimeType="application/x-iso9660-image"/>
+				<data android:mimeType="application/x-iso9660-image" />
 				<data android:mimeType="application/vnd.ms-cab-compressed" />
 				<data android:mimeType="application/x-lzh" />
 				<data android:mimeType="application/x-lzh-compressed" />
@@ -89,8 +89,8 @@
 		</activity>
 
 		<provider
-			android:name="com.karthek.android.s.files.FProvider"
-			android:authorities="com.karthek.android.s.files.FProvider.file"
+			android:name=".FProvider"
+			android:authorities="${applicationId}.FProvider.file"
 			android:exported="false"
 			android:grantUriPermissions="true" />
 	</application>

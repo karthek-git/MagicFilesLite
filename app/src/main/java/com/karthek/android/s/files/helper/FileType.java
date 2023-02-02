@@ -1,20 +1,17 @@
 package com.karthek.android.s.files.helper;
 
+import static com.karthek.android.s.files.helper.SFile.getNativeFD;
+
 import android.content.Context;
 import android.content.res.AssetManager;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-
-import static com.karthek.android.s.files.helper.SFile.getNativeFD;
-import static java.nio.file.Files.probeContentType;
+import android.webkit.MimeTypeMap;
 
 public class FileType {
 
 	public FileType(Context context) {
 		System.loadLibrary("magic-wrapper");
 		c_magic_open(context.getAssets());
-		System.out.println("mgc initttttttt");
+		System.out.println("mgc init");
 	}
 
 	private native synchronized int c_magic_open(AssetManager assetManager);
@@ -27,16 +24,20 @@ public class FileType {
 
 
 	public String getFileMIMEType(String filename) {
-		String string = null;
-		try {
-			string = probeContentType(Paths.get(filename));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String string = getMimeTypeFromExtension(filename);
 		if (string == null || string.contains("oct")) {
 			string = getFileMIMETypeMGC(filename);
 		}
 		return string;
+	}
+
+	private String getMimeTypeFromExtension(String name) {
+		final int lastDot = name.lastIndexOf('.');
+		if (lastDot >= 0) {
+			final String extension = name.substring(lastDot + 1);
+			return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+		}
+		return null;
 	}
 
 	private String getFileMIMETypeMGC(String filename) {

@@ -8,6 +8,24 @@
 	tools:context=".FActivity">
 
 	<TextView
+		android:id="@+id/t_fops_opw"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:onClick="m_fops_opw"
+		android:padding="15dp"
+		android:text="@string/open_with"
+		android:textAlignment="center" />
+
+	<TextView
+		android:id="@+id/t_fops_opw_sel"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:onClick="m_fops_opw_sel"
+		android:padding="15dp"
+		android:text="@string/open_as"
+		android:textAlignment="center" />
+
+	<TextView
 		android:id="@+id/t_fops_ynk"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
@@ -44,7 +62,7 @@
 		android:textAlignment="center" />
 
 	<TextView
-		android:id="@+id/textView8"
+		android:id="@+id/t_fops_share"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:onClick="m_fops_share"

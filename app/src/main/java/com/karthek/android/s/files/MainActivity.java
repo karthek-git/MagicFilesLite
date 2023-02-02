@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getActionBar().setHideOnContentScrollEnabled(true);
+		//getActionBar().setHideOnContentScrollEnabled(true);
 		return true;
 	}
 

@@ -1,7 +1,6 @@
 package com.karthek.android.s.files;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.karthek.android.s.files.helper.FileType;
 import com.karthek.android.s.files.helper.SFile;
@@ -19,7 +18,6 @@ public class FApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		fileType = new FileType(this);
-		Log.v("fapp", "app created");
 	}
 
 

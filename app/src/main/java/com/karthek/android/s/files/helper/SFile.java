@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.Objects;
 
 public class SFile {
-	public File file;
+	final public File file;
 	public long size = -1;
 	public long modified;
 	public boolean isDir;
@@ -72,8 +72,6 @@ public class SFile {
 
 	@Override
 	public String toString() {
-		return "SFile{" +
-				"file=" + file.getAbsolutePath() +
-				'}';
+		return "SFile{file=" + file.getAbsolutePath() + '}';
 	}
 }

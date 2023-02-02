@@ -1,5 +1,9 @@
 package com.karthek.android.s.files;
 
+import static android.text.format.Formatter.formatShortFileSize;
+import static com.karthek.android.s.files.FApplication.fileType;
+import static java.nio.file.Files.walkFileTree;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -17,10 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
-
-import static android.text.format.Formatter.formatShortFileSize;
-import static com.karthek.android.s.files.FApplication.fileType;
-import static java.nio.file.Files.walkFileTree;
 
 public class statDialog extends DialogFragment {
 
@@ -43,7 +43,7 @@ public class statDialog extends DialogFragment {
 	public void onStart() {
 		super.onStart();
 		Dialog dialog = getDialog();
-		final SFile sFile = context.selectedFile;
+		final SFile sFile = context.viewModel.selectedFile;
 		TextView textView = dialog.findViewById(R.id.FPath);
 		textView.setText(sFile.file.getAbsolutePath());
 		textView = dialog.findViewById(R.id.textView_date);

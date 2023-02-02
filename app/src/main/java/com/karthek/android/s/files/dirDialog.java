@@ -33,7 +33,7 @@ public class dirDialog extends DialogFragment {
 			return builder.create();
 		}
 		FCase = bundle.getInt("FCase");
-		switch (bundle.getInt("FCase")) {
+		switch (FCase) {
 			case 1:
 				builder.setView(inflater.inflate(R.layout.dfrag_fops, null));
 				break;
@@ -73,7 +73,6 @@ public class dirDialog extends DialogFragment {
 	}
 
 
-
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -85,10 +84,16 @@ public class dirDialog extends DialogFragment {
 		}
 		switch (FCase) {
 			case 1:
-				Window window=getDialog().getWindow();
+				Window window = getDialog().getWindow();
 				window.setGravity(Gravity.BOTTOM);
 				window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 				window.setBackgroundDrawableResource(R.color.colorMainBackGround);
+				if (bundle.getBoolean("isDir")) {
+					Dialog dialog = getDialog();
+					dialog.findViewById(R.id.t_fops_opw).setVisibility(View.GONE);
+					dialog.findViewById(R.id.t_fops_opw_sel).setVisibility(View.GONE);
+					dialog.findViewById(R.id.t_fops_share).setVisibility(View.GONE);
+				}
 				break;
 			case 4:
 				//getDialog().setTitle(R.string.rename);

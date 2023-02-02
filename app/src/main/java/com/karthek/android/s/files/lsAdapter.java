@@ -50,7 +50,7 @@ public class lsAdapter extends BaseAdapter implements View.OnClickListener, View
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final ViewHolder viewHolder;
 		if (convertView == null) {
-			System.out.println("getview:" + position);
+			//System.out.println("getview:" + position);
 
 			viewHolder = new ViewHolder();
 			viewHolder.context = parent.getContext();

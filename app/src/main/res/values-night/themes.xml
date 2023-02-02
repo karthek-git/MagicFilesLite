@@ -13,11 +13,13 @@
 		  <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 		  &lt;!&ndash; Customize your theme here. &ndash;&gt;
 	  </style>-->
-	<style name="BlackSanUI" parent="android:Theme.DeviceDefault.DayNight">
-		<item name="android:windowActionBarOverlay">true</item>
+	<style name="BlackSanUI" parent="android:Theme.DeviceDefault">
+		<item name="android:windowActionBarOverlay">false</item>
 		<item name="android:windowBackground">@android:color/black</item>
 		<item name="android:windowActivityTransitions">true</item>
 		<item name="android:alertDialogTheme">@style/BlackSanUI.Dialog</item>
+		<item name="android:actionModeCloseDrawable">@drawable/ic_outline_close_24</item>
+		<item name="android:navigationBarColor">@color/colorMainBackGround</item>
 	</style>
 
 	<style name="BlackSanUI.Dialog" parent="android:Theme.DeviceDefault.Dialog.Alert">

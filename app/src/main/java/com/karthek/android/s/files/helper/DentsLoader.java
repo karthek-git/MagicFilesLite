@@ -21,7 +21,7 @@ public class DentsLoader extends AsyncTaskLoader<SFile[]> implements FileFilter 
 		super(context);
 		Dir = lsFrag.Cwd.getAbsolutePath();
 		showHidden = lsFrag.showHidden;
-		SType = lsFrag.SType;
+		SType = lsFrag.sortType;
 		sortAscending = lsFrag.sortAscending;
 	}
 

@@ -43,6 +43,8 @@
 	<string name="del_progress">Deleting files…</string>
 	<string name="progress_paste">Pasting files…</string>
 	<string name="extract">Extract</string>
+	<string name="open_with">Open with</string>
+	<string name="open_as">Open as</string>
 
 	<plurals name="items">
 		<item quantity="one">%d item</item>

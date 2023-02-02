@@ -1,6 +1,9 @@
 package com.karthek.android.s.files;
 
-import android.app.Activity;
+import static android.content.Intent.ACTION_VIEW;
+import static java.nio.file.Files.walkFileTree;
+
+import android.annotation.TargetApi;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -9,6 +12,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
@@ -22,8 +26,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.karthek.android.s.files.helper.DentsLoader;
 import com.karthek.android.s.files.helper.SFile;
@@ -40,28 +42,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import static android.content.Intent.ACTION_VIEW;
-import static java.nio.file.Files.walkFileTree;
-
 public class lsFrag extends ListFragment implements LoaderManager.LoaderCallbacks<SFile[]>,
 		SharedPreferences.OnSharedPreferenceChangeListener, View.OnClickListener,
 		SearchView.OnQueryTextListener,
 		SearchView.OnCloseListener {
 
-	Activity context;
 	public File Cwd = Environment.getExternalStorageDirectory();
 	int NestChop = -1;
 	ProgressBar progressBar;
-	Stack<Parcelable> parcelableStack = new Stack<>();
+	final Stack<Parcelable> parcelableStack = new Stack<>();
 	Parcelable curState;
 	LruCache<String, Bitmap> bitmapLruCache;
 	SFile[] sFiles;
 	public boolean showHidden;
-	public int SType;
+	public int sortType;
 	public boolean sortAscending;
-	View ToastView;
-	TextView ToastTextView;
-	Toast toast;
+	boolean shouldStop = false;
 
 
 	@Override
@@ -79,8 +75,7 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		if (s != null) {
 			switch (s) {
 				case "Download":
-					Cwd =
-							Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+					Cwd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 					break;
 				case "Recents":
 
@@ -91,16 +86,15 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		sortAscending = sharedPreferences.getBoolean("prefs_sort_asc", true);
 		switch (sharedPreferences.getString("prefs_sort_type", "File name")) {
 			case "File name":
-				SType = 0;
+				sortType = 0;
 				break;
 			case "Size":
-				SType = 1;
+				sortType = 1;
 				break;
 			case "Modified":
-				SType = 2;
+				sortType = 2;
 				break;
 		}
-		context = getActivity();
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -108,10 +102,6 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	@Override
 	public void onResume() {
 		super.onResume();
-		ToastView = getLayoutInflater().inflate(R.layout.solid_toast,
-				context.findViewById(R.id.custom_toast_container));
-		ToastTextView = ToastView.findViewById(R.id.text);
-		toast = new Toast(context);
 		PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
 	}
 
@@ -125,11 +115,6 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		return inflater.inflate(R.layout.frag_list, container, false);
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
 	}
 
 	@Override
@@ -148,7 +133,6 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		m2(viewHolder.sFile);
 	}
 
-	boolean shouldStop = false;
 
 	@Override
 	public void onClick(View v) {
@@ -166,7 +150,10 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		if (newText.length() > 1) {
 			getListView().setVisibility(View.GONE);
 			progressBar.setVisibility(View.VISIBLE);
-			new Thread(() -> getSearchFiles(newText)).start();
+			new Thread(() -> {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) getSearchFiles(newText);
+				else goSearchFiles(newText);
+			}).start();
 		}
 		return false;
 	}
@@ -191,13 +178,13 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 				switch (sharedPreferences.getString(key, null)) {
 					case "File name":
 						Log.v("prefs", key);
-						SType = 0;
+						sortType = 0;
 						break;
 					case "Size":
-						SType = 1;
+						sortType = 1;
 						break;
 					case "Modified":
-						SType = 2;
+						sortType = 2;
 						break;
 				}
 				break;
@@ -269,17 +256,13 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 			//FArchive.extractArchive(ftmp.getAbsolutePath());
 			Intent intent = new Intent(ACTION_VIEW);
 			String FType = sFile.getMimeType();
-			intent.setDataAndTypeAndNormalize(Uri.parse("content://com.karthek.android.s.files.FProvider" +
+			intent.setDataAndTypeAndNormalize(Uri.parse("content://"+BuildConfig.APPLICATION_ID+".FProvider" +
 					".file/" + Uri.encode(sFile.file.getAbsolutePath())), FType);
 			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 			try {
 				startActivity(intent);
 			} catch (Exception e) {
-				if (sFile.size == 0) {
-					ToastTextView.setText("empty file");
-					toast.setView(ToastView);
-					toast.show();
-				} else if (FType.equals("application/octet-stream")) {
+				if (FType.equals("application/octet-stream")) {
 					intent.setDataAndTypeAndNormalize(Uri.parse("content://com.karthek.android.s.files.FProvider" +
 							".file/" + Uri.encode(sFile.file.getAbsolutePath())), "*/*");
 					startActivity(intent);
@@ -297,58 +280,62 @@ public class lsFrag extends ListFragment implements LoaderManager.LoaderCallback
 		}
 	}
 
-	private void goSearchFiles(String query) throws IOException {
+	private void goSearchFiles(String query) {
 		shouldStop = false;
 		final ArrayList<SFile> fileArrayList = new ArrayList<>();
 		final PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**" + query + "**");
-		walkFileTree(Cwd.toPath(), new SimpleFileVisitor<Path>() {
-			int size = 0;
+		try {
+			walkFileTree(Cwd.toPath(), new SimpleFileVisitor<Path>() {
+				int size = 0;
 
-			@Override
-			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-				if (pathMatcher.matches(dir)) {
-					System.out.println(dir);
-					fileArrayList.add(new SFile(dir.toFile()));
+				@Override
+				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+					if (pathMatcher.matches(dir)) {
+						System.out.println(dir);
+						fileArrayList.add(new SFile(dir.toFile()));
+					}
+					return super.preVisitDirectory(dir, attrs);
 				}
-				return super.preVisitDirectory(dir, attrs);
-			}
 
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				if (shouldStop) return FileVisitResult.TERMINATE;
-				addIt();
-				return super.postVisitDirectory(dir, exc);
-			}
-
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				if (pathMatcher.matches(file)) {
-					System.out.println(file);
-					fileArrayList.add(new SFile(file.toFile()));
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					if (shouldStop) return FileVisitResult.TERMINATE;
+					addIt();
+					return super.postVisitDirectory(dir, exc);
 				}
-				return super.visitFile(file, attrs);
-			}
 
-			@Override
-			public FileVisitResult visitFileFailed(Path file, IOException exc) {
-				return FileVisitResult.CONTINUE;
-			}
-
-			private void addIt() {
-				int fsize = fileArrayList.size();
-				if (fsize > size) {
-					size = fsize;
-					sFiles = fileArrayList.toArray(new SFile[0]);
-					getActivity().runOnUiThread(() -> {
-						((lsAdapter) getListAdapter()).notifyDataSetChanged();
-						setListAdapter(getListAdapter());
-					});
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					if (pathMatcher.matches(file)) {
+						System.out.println(file);
+						fileArrayList.add(new SFile(file.toFile()));
+					}
+					return super.visitFile(file, attrs);
 				}
-			}
-		});
 
+				@Override
+				public FileVisitResult visitFileFailed(Path file, IOException exc) {
+					return FileVisitResult.CONTINUE;
+				}
+
+				private void addIt() {
+					int fsize = fileArrayList.size();
+					if (fsize > size) {
+						size = fsize;
+						sFiles = fileArrayList.toArray(new SFile[0]);
+						getActivity().runOnUiThread(() -> {
+							((lsAdapter) getListAdapter()).notifyDataSetChanged();
+							setListAdapter(getListAdapter());
+						});
+					}
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.Q)
 	private void getSearchFiles(String query) {
 		String relPath = "";
 		Path CPath = Cwd.toPath();
