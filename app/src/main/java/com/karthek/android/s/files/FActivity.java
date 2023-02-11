@@ -10,6 +10,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -390,8 +391,11 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 		dirdialog.dismiss();
 		Intent intent = new Intent(ACTION_SEND);
 		String f = viewModel.selectedFile.file.getAbsolutePath();
-		intent.putExtra(Intent.EXTRA_STREAM,
-				Uri.parse("content://" + BuildConfig.APPLICATION_ID + ".FProvider.file/" + Uri.encode(f)));
+		Uri uri =
+				Uri.parse("content://" + BuildConfig.APPLICATION_ID + ".FProvider.file/" + Uri.encode(f));
+		intent.putExtra(Intent.EXTRA_STREAM, uri);
+		intent.putExtra(Intent.EXTRA_TITLE, viewModel.selectedFile.file.getName());
+		intent.setClipData(ClipData.newUri(getContentResolver(), "", uri));
 		intent.setType(viewModel.selectedFile.getMimeType());
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		startActivity(Intent.createChooser(intent, null));
