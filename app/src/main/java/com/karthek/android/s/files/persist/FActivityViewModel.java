@@ -11,5 +11,6 @@ public class FActivityViewModel {
 	public List<String> SelectedFileList;
 	public int clp_org = 0;
 	public boolean Ccp;
+	public boolean showSettingsOption=true;
 	public int renm;
 }

@@ -87,7 +87,7 @@ public class dirDialog extends DialogFragment {
 				Window window = getDialog().getWindow();
 				window.setGravity(Gravity.BOTTOM);
 				window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-				window.setBackgroundDrawableResource(R.color.colorMainBackGround);
+				//window.setBackgroundDrawableResource(R.color.colorMainBackGround);
 				if (bundle.getBoolean("isDir")) {
 					Dialog dialog = getDialog();
 					dialog.findViewById(R.id.t_fops_opw).setVisibility(View.GONE);

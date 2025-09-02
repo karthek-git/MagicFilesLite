@@ -3,7 +3,10 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:background="@drawable/smooth_edge_rect"
+	android:elevation="8dp"
 	android:orientation="vertical"
+	android:paddingTop="8dp"
 	android:theme="@style/BlackSanUI.Button"
 	tools:context=".FActivity">
 
@@ -11,71 +14,87 @@
 		android:id="@+id/t_fops_opw"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:drawableStart="@drawable/outline_open_with_24"
+		android:drawablePadding="24dp"
 		android:onClick="m_fops_opw"
 		android:padding="15dp"
 		android:text="@string/open_with"
-		android:textAlignment="center" />
+		android:textColor="@color/colorMain" />
 
 	<TextView
 		android:id="@+id/t_fops_opw_sel"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:drawableStart="@drawable/outline_open_as_24"
+		android:drawablePadding="24dp"
 		android:onClick="m_fops_opw_sel"
 		android:padding="15dp"
 		android:text="@string/open_as"
-		android:textAlignment="center" />
+		android:textColor="@color/colorMain" />
 
 	<TextView
 		android:id="@+id/t_fops_ynk"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:drawableStart="@drawable/outline_file_copy_24"
+		android:drawablePadding="24dp"
 		android:onClick="m_fops_yks"
 		android:padding="15dp"
 		android:text="@android:string/copy"
-		android:textAlignment="center" />
+		android:textColor="@color/colorMain" />
 
 	<TextView
 		android:id="@+id/t_fops_kill"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:drawableStart="@drawable/outline_content_cut_24"
+		android:drawablePadding="24dp"
 		android:onClick="m_fops_yks"
 		android:padding="15dp"
 		android:text="@android:string/cut"
-		android:textAlignment="center" />
+		android:textColor="@color/colorMain" />
 
 	<TextView
 		android:id="@+id/textView6"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:drawableStart="@drawable/outline_delete_24"
+		android:drawablePadding="24dp"
 		android:onClick="m_fops_del"
 		android:padding="15dp"
 		android:text="@string/delete"
-		android:textAlignment="center" />
+		android:textColor="@color/colorMain" />
 
 	<TextView
 		android:id="@+id/textView7"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:drawableStart="@drawable/outline_drive_file_rename_outline_24"
+		android:drawablePadding="24dp"
 		android:onClick="m_fops_editname"
 		android:padding="15dp"
 		android:text="@string/rename"
-		android:textAlignment="center" />
+		android:textColor="@color/colorMain" />
 
 	<TextView
 		android:id="@+id/t_fops_share"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:drawableStart="@drawable/outline_share_24"
+		android:drawablePadding="24dp"
 		android:onClick="m_fops_share"
 		android:padding="15dp"
 		android:text="@string/share"
-		android:textAlignment="center" />
+		android:textColor="@color/colorMain" />
 
 	<TextView
 		android:id="@+id/textView9"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:drawableStart="@drawable/outline_info_24"
+		android:drawablePadding="24dp"
 		android:onClick="m_fops_stat"
 		android:padding="15dp"
 		android:text="@string/stat"
-		android:textAlignment="center" />
+		android:textColor="@color/colorMain" />
 </LinearLayout>

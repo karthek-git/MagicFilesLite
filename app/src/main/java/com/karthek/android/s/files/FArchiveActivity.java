@@ -46,7 +46,7 @@ public class FArchiveActivity extends Activity {
 			e.printStackTrace();
 		}
 		if (new File(targetDir).exists()) {
-			if (FArchive.extractArchive(fd, targetDir) == 0)
+			if (new FArchive().extractArchive(fd, targetDir) == 0)
 				Toast.makeText(this, "extracted", Toast.LENGTH_SHORT).show();
 			else
 				Toast.makeText(this, "Extraction failed", Toast.LENGTH_SHORT).show();

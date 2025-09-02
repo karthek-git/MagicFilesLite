@@ -160,6 +160,10 @@ public class FActivity extends Activity implements AbsListView.OnScrollListener,
 			menuItem.setVisible(true);
 			viewModel.Ccp = false;
 		}
+		if (!viewModel.showSettingsOption) {
+			menu.findItem(R.id.ab_customize).setVisible(false);
+			viewModel.showSettingsOption = true;
+		}
 		return true;
 	}
 
